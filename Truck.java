@@ -61,6 +61,16 @@ public abstract class Truck implements Scheduleable
     }
     
     /**
-     * Moves the truck towards the given destination.  If we woul
+     * Moves the truck towards the given destination.  If we wind up on it,
+     * then rejoice, and join the queue
      */
+    public void move(){
+        
+    }
+    
+    /**
+     * Gets the move speed of the truck.
+     * Subclasses override to get their correct speed
+     */
+    public abstract double getMoveSpeed();
 }
