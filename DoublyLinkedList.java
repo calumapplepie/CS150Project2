@@ -1,3 +1,4 @@
+import java.util.function.Function;
 
 /**
  * A standard-issue DoublyLinkedList.
@@ -12,6 +13,8 @@ public class DoublyLinkedList<E>
     private Node<E> head;
     private Node<E> tail;
     private int len;
+    // indicates whether we are locked; has nothing to do with GC
+    private boolean finalized;
     
     /**
      * This is an internal method that fetches Node objects.
@@ -62,20 +65,14 @@ public class DoublyLinkedList<E>
      */
     public void remove(int index){
         // TODO    
-    }
-    
-    /**
-     * Removes the (first) element equal to the one provided from the list.
-     * For instance, if a list containing [3,4,2,3,4,6,2,3,2,4] has .remove(2)
-     * called, then the list will have [3,4,3,4,6,2,3,2,4]
-     */
+    }    
     
     /**
      * Adds an element to the end of the list 
      * @param data the value of the element to add
      */
     public void add(E data){
-        //TODO
+        add(len-1, data);
     }
     
     /**
@@ -88,6 +85,60 @@ public class DoublyLinkedList<E>
      */
     public void add(int index, E data){
         //TODO
+    }
+    
+    /**
+     * Gets the number of elements in this list.
+     * 
+     * @return the number of elements in this list: 0 if empty
+     */
+    public int size(){
+        return len;
+    }
+    
+    /**
+     * This method is a bit ugly: but it's needed to efficently do routings
+     * other than "go down the list, stopping at each pickup then each destination"
+     * <p>
+     * It applies the lambda function to each member of this list one at a time:
+     * each result is placed in a new list, which is returned.  For instance, 
+     * if this list were to contain ShipmentOrders and the provided function
+     * calculated the distance between the current position and the pickup, then
+     * the returned value would be each of the doubles that resulted from that
+     * calculation
+     * @param function The function to apply to each of the List members
+     * @return A list of the results, in the same order as this list
+     */
+    public <G> DoublyLinkedList<G> applyFunctionToList(Function<E,G> function){
+        // lets just write this out now
+        Node<E> cur = head;
+        DoublyLinkedList<G> results = new DoublyLinkedList<G>();
+        while(cur != null){
+            G result = function.apply(cur.data);
+            results.add(result);
+        }
+        return results;
+    }
+    
+    /**
+     * Locks the list in it's current state.  This makes any future
+     * add() or remove() operations an exception.  The elements can still
+     * be modified, however.
+     * <p>
+     * There is no unlock() operation. This is intentional.  Its not
+     * much of a lock if anyone can open it
+     */
+    public void lock(){
+        finalized = true;
+    }
+    
+    /**
+     * States whether the list is currently locked, or if it can still
+     * be modified
+     * @return true if the list is unable to be modified, false otherwise
+     */
+    public boolean isLocked(){
+        return finalized;
     }
     
     private class Node<E>{
