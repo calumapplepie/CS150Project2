@@ -12,6 +12,7 @@ public class DoublyLinkedList<E>
 {
     private Node<E> head;
     private Node<E> tail;
+    private Node<E> curr;
     private int len = 0;
     // indicates whether we are locked; has nothing to do with GC
     private boolean finalized = false;
@@ -97,6 +98,27 @@ public class DoublyLinkedList<E>
     }
     
     /**
+     * This is a "fake" queue: it doesn't modify the underlying
+     * list at all.  It is used for repeated iteration, or other
+     * cases where you want to go through the structure without needing
+     * to clone it and save a copy, or repeatedly pay the O(N) cost of
+     * seeking.
+     * @return the element at the current 'fake head' of the queue
+     */
+    public E fakePop(){
+        E retval = curr.data;
+        curr = curr.next;
+        return retval;
+    }
+    
+    /**
+     * Resets the "fake" queue to the start
+     */
+    public void resetFakeQueue(){
+        curr = head;
+    }
+    
+    /**
      * This method is a bit ugly: but it's needed to efficently do routings
      * other than "go down the list, stopping at each pickup then each destination"
      * <p>
@@ -150,6 +172,34 @@ public class DoublyLinkedList<E>
     }
     
     /**
+     * Empties out the list
+     */
+    public void clear(){
+        //todo
+    }
+    
+    /**
+     * Appends another list onto the end of this one:
+     * it is not a deep copy, but it is very fast
+     * @param other another list, with a compatable type, which will be
+     * grafted onto this one
+     */
+    public void append(DoublyLinkedList<E> other){
+        // switch to a clone of other, to avoid breakage
+        other = other.clone();
+        
+        // change tail to point at the other's head as the next element
+        // and vice versa for the other head
+        tail.next = other.head;
+        other.head.next = tail;
+        
+        // now move our tail to the end of the combined list, and increase len
+        tail = other.tail;
+        len += other.len;
+        
+    }
+    
+    /**
      * Clones the object.  This also clears the isLocked flag, which
      * may be useful.  Note that contained elements are not cloned:
      * this is a shallow cloning operation
@@ -158,10 +208,29 @@ public class DoublyLinkedList<E>
      */
     public DoublyLinkedList<E> clone(){
         DoublyLinkedList<E> retval = new DoublyLinkedList<E>();
-        // just copy over the references
-        retval.head = this.head;
-        retval.tail = this.tail;
-        retval.len = this.len;
+        // we can't just copy over the head/tail refs, that'd be too easy
+        // iterate through, duplicating each element and tacking it on
+        Node<E> nextOrig = head;
+        Node<E> tmp = new Node<E>();
+        tmp.data = head.data;
+        retval.head = tmp;
+        Node<E> prevClone = tmp;
+        while(nextOrig.next != null){
+            // grab next element
+            nextOrig = nextOrig.next;
+            prevClone = tmp;
+            
+            // init our newest node
+            tmp = new Node<E>();
+            tmp.data = nextOrig.data;
+            tmp.prev = prevClone;
+            
+            // connect it in, and prp for next loop.
+            prevClone.next = tmp;
+            
+        }
+        retval.tail = tmp;
+        retval.len = len;
         return retval;
     }
     

@@ -5,11 +5,12 @@
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class Warehouse
+public class Warehouse implements Scheduleable
 {
     private final Point location;
     // factorio is a very fun game: I take their terminology`
-    private final DeQueue<Truck> stacker = new DeQueue<Truck>();
+    private final DeQueue<Truck> enter = new DeQueue<Truck>();
+    private final DeQueue<Truck> exits = new DeQueue<Truck>();
     
     /**
      * Builds a warehouse
@@ -21,9 +22,26 @@ public class Warehouse
     }
     
     /**
-     * Adds the given truck to the queue
+     * Adds the given truck to the entrance queue
      */
     public void joinQueue(Truck t){
         
+    }
+    
+    /**
+     * Steps through: a number of trucks equal to the loading docks
+     * are popped out of the queue, and given the appropriate cargo,
+     * before being placed into an exit queue.  
+     */
+    public void action(){
+        
+    }
+    
+    /**
+     * Prepares a log string indicating how many trucks are in the entry
+     * and exit queues.
+     */
+    public String status(){
+        return "";
     }
 }

@@ -13,6 +13,7 @@ public abstract class Truck implements Scheduleable
     private final DeQueue<ShipmentOrder> manifest;
     private final Router router;
     private Point currentLocation;
+    private boolean paused = false;
     
     /**
      * Creates a truck.  Most parts of the truck are expected to be
@@ -29,11 +30,11 @@ public abstract class Truck implements Scheduleable
      * which will be carried out by this truck
      */
     public Truck(
-        ShipmentOrder[] cargoArray, 
+        int cargoSize, 
         DeQueue<ShipmentOrder> cargoManifest,
         Router router,
         Point startingPoint){
-            currentCargo = cargoArray;
+            currentCargo = new ShipmentOrder[cargoSize];
             manifest = cargoManifest;
             this.router = router;
             currentLocation = startingPoint;
@@ -42,4 +43,24 @@ public abstract class Truck implements Scheduleable
             manifest.lock();
     }
     
+    /**
+     * Moves the truck along: if it has arrived at a warehouse, join the
+     * loading queue and prepare to empty cargo.
+     */
+    public void action(){
+        
+    }
+    
+    /**
+     * Prepares a string describing the current location, destination, and
+     * the cargo.  This string is added to another string that notes any
+     * changes in the past cycle: eg, cargo added or removed.
+     */
+    public String status(){
+        return "";
+    }
+    
+    /**
+     * Moves the truck towards the given destination.  If we woul
+     */
 }

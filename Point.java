@@ -1,33 +1,45 @@
 
 /**
- * Write a description of class Point here.
+ * This represents a point in space, and provides some
+ * methods to work with that point.
+ * 
+ * Points are immutable: this is simply for the fun of working
+ * with immutable objects, which (for some languages) is basically
+ * all objects.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Calum McConnell
+ * @version 0.0.1
  */
 public class Point
 {
-    // instance variables - replace the example below with your own
-    private int x;
+    private final double xPos;
+    private final double yPos;
 
     /**
      * Constructor for objects of class Point
      */
-    public Point()
+    public Point(double x, double y)
     {
-        // initialise instance variables
-        x = 0;
+        xPos = x;
+        yPos = y;
     }
 
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * Calculates the next point on the line between
+     * this point and the provided point, which is the
+     * given distance away from this point on that line
+     * <p>
+     * If this would go past the other point, return the other point
+     * instead
+     * 
+     * @param other The other point, which we are "heading towards"
+     * @param dist the distance to move towards that point.
+     * @return a new point, "dist" units closer to (or else simply equal to)
+     * the other point.
      */
-    public int sampleMethod(int y)
+    public Point calculateNext(Point other, double dist)
     {
-        // put your code here
-        return x + y;
+        //TODO
+        return new Point(0,0);
     }
 }

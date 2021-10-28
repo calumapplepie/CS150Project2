@@ -17,5 +17,5 @@ public interface Scheduleable {
     /**
      * Will store the object’s current information into a log file.
      */ 
-    public String log_status();
+    public String status();
 }
