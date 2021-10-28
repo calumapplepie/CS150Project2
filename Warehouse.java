@@ -1,33 +1,29 @@
 
 /**
- * Write a description of class Warehouse here.
+ * A single warehouse, which "contains" goods to be shipped.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Calum McConnell
+ * @version 0.0.1
  */
 public class Warehouse
 {
-    // instance variables - replace the example below with your own
-    private int x;
-
+    private final Point location;
+    // factorio is a very fun game: I take their terminology`
+    private final DeQueue<Truck> stacker = new DeQueue<Truck>();
+    
     /**
-     * Constructor for objects of class Warehouse
+     * Builds a warehouse
+     * @param p the location to build the warehouse at
+     * @param docks the number of loading docks that this warehouse has
      */
-    public Warehouse()
-    {
-        // initialise instance variables
-        x = 0;
+    public Warehouse(Point p, int docks){
+        location = p;
     }
-
+    
     /**
-     * An example of a method - replace this comment with your own
-     *
-     * @param  y  a sample parameter for a method
-     * @return    the sum of x and y
+     * Adds the given truck to the queue
      */
-    public int sampleMethod(int y)
-    {
-        // put your code here
-        return x + y;
+    public void joinQueue(Truck t){
+        
     }
 }

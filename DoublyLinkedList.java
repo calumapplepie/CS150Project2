@@ -12,9 +12,9 @@ public class DoublyLinkedList<E>
 {
     private Node<E> head;
     private Node<E> tail;
-    private int len;
+    private int len = 0;
     // indicates whether we are locked; has nothing to do with GC
-    private boolean finalized;
+    private boolean finalized = false;
     
     /**
      * This is an internal method that fetches Node objects.
@@ -139,6 +139,30 @@ public class DoublyLinkedList<E>
      */
     public boolean isLocked(){
         return finalized;
+    }
+    
+    /**
+     * States whether or not the list is empty
+     * @return true if there are no elements: false otherwise
+     */
+    public boolean isEmpty(){
+        return len==0;
+    }
+    
+    /**
+     * Clones the object.  This also clears the isLocked flag, which
+     * may be useful.  Note that contained elements are not cloned:
+     * this is a shallow cloning operation
+     * 
+     * @return a shallow clone of this list
+     */
+    public DoublyLinkedList<E> clone(){
+        DoublyLinkedList<E> retval = new DoublyLinkedList<E>();
+        // just copy over the references
+        retval.head = this.head;
+        retval.tail = this.tail;
+        retval.len = this.len;
+        return retval;
     }
     
     private class Node<E>{
