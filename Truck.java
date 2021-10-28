@@ -7,7 +7,7 @@
  * @author Calum McConnell
  * @version 0.1
  */
-public class Truck
+public abstract class Truck implements Scheduleable
 {
     private final ShipmentOrder[] currentCargo;
     private final DeQueue<ShipmentOrder> manifest;
