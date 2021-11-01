@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 
 /**
  * A single warehouse, which "contains" goods to be shipped.
@@ -5,7 +6,7 @@
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class Warehouse implements Schedule
+public class Warehouse implements Schedule, Render
 {
     public final Point location;
     // factorio is a very fun game: I take their terminology`
@@ -43,5 +44,9 @@ public class Warehouse implements Schedule
      */
     public String status(){
         return "";
+    }
+    
+    public void draw(Graphics g){
+        
     }
 }

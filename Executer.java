@@ -8,8 +8,8 @@
  */
 public class Executer
 {
-    private DeQueue<Truck> trucks;
-    private DeQueue<Warehouse> warehouses;
+    private DoublyLinkedList<Truck> trucks;
+    private DoublyLinkedList<Warehouse> warehouses;
     
     
     /**

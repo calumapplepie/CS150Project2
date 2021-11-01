@@ -15,9 +15,9 @@ public class ShipmentOrder
 {
     private ShipmentState state;
     
-    // Final members may be public without breaking encapsulation if:
+    // Final members may be made public without breaking encapsulation if:
     //      A) they are immutable
-    //      B) the reference is shared
+    //      B) the object referred to is shared anywas
     // B) is true here: so we just make them public, to make the API simpler
     public final Warehouse pickup;
     public final Warehouse destination;

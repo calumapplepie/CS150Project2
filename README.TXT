@@ -1,12 +1,13 @@
 ------------------------------------------------------------------------
-This is the project README file. Here, you should describe your project.
-Tell the reader (someone who does not know anything about this project)
-all they need to know. The comments should usually include at least:
+Welome to the Magic Truck Dispatch Simulator!  The only game where you
+have next to no control over the results!
+Simply set up the configuration file according the the format described in
+Configuration.java, kick off the code, and watch those trucks move!
 ------------------------------------------------------------------------
 
-PROJECT TITLE:
+PROJECT TITLE:MagicTruckDispatchSim
 PURPOSE OF PROJECT:
 VERSION or DATE:
 HOW TO START THIS PROJECT:
-AUTHORS:
+AUTHORS: Calum McConnell
 USER INSTRUCTIONS:

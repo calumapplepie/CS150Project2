@@ -1,3 +1,4 @@
+import java.awt.Graphics;
 
 /**
  * This is a truck.  Most functionality is provided in this class,
@@ -7,7 +8,7 @@
  * @author Calum McConnell
  * @version 0.1
  */
-public abstract class Truck implements Schedule
+public abstract class Truck implements Schedule, Render
 {
     private final ShipmentOrder[] currentCargo;
     private final DeQueue<ShipmentOrder> manifest;
@@ -85,4 +86,8 @@ public abstract class Truck implements Schedule
      * Subclasses override to get their correct speed
      */
     public abstract double getMoveSpeed();
+    
+    public void draw(Graphics g){
+        //todo
+    }
 }

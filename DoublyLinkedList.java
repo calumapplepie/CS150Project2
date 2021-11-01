@@ -175,7 +175,11 @@ public class DoublyLinkedList<E>
      * Empties out the list
      */
     public void clear(){
-        //todo
+        // set len=0, drop head, tail, and curr references.
+        len = 0;
+        head = null;
+        curr = null;
+        tail = null;
     }
     
     /**
