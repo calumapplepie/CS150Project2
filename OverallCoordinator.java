@@ -3,8 +3,8 @@
  * and states of the simulation.  It prepares each of the configuration
  * managers, and spins them off to preform each of their runs.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Calum McConnell
+ * @version 0.0.1
  */
 public class OverallCoordinator
 {
