@@ -2,7 +2,7 @@
 /**
  * This represents a point in space, and provides some
  * methods to work with that point.
- * 
+ * <p>
  * Points are immutable: this is simply for the fun of working
  * with immutable objects, which (for some languages) is basically
  * all objects.
@@ -12,8 +12,10 @@
  */
 public class Point
 {
-    private final double xPos;
-    private final double yPos;
+    // because these are primitives and final, they are immutable:
+    // allowing direct access to them is not a problem.
+    public final double xPos;
+    public final double yPos;
 
     /**
      * Constructor for objects of class Point
@@ -41,5 +43,29 @@ public class Point
     {
         //TODO
         return new Point(0,0);
+    }
+    
+    /**
+     * Returns true if both point objects refer to the same coordinate.
+     * Tolerates a small epsilon.
+     * 
+     * @return true if the points are equal to each
+     */
+    public boolean equals(Point p){
+        return floatingEquals(xPos, p.xPos) && floatingEquals(yPos,p.yPos);
+    }
+    
+    /**
+     * Verifies that the two doubles are equal to each other,
+     * with a tolerance equal to 10 units of least precision.
+     * <p>
+     * This should REALLY just be in the java standard library:
+     * toDegrees() exists, and that's much simpler, so why can't this?!?!?!
+     */
+    public static boolean floatingEquals(double a, double b){
+        // we make sure that difference between the two is less than 10
+        // Units of Least precision: ie, that it is within 10 numbers
+        // of the right answer
+        return Math.abs(a-b) < Math.ulp(a) * 10;
     }
 }

@@ -14,27 +14,18 @@
 public class ShipmentOrder
 {
     private ShipmentState state;
-    private final Warehouse pickup;
-    private final Warehouse destination;
+    
+    // Final members may be public without breaking encapsulation if:
+    //      A) they are immutable
+    //      B) the reference is shared
+    // B) is true here: so we just make them public, to make the API simpler
+    public final Warehouse pickup;
+    public final Warehouse destination;
     
     public ShipmentOrder(Warehouse start, Warehouse end){
         pickup = start;
         destination = end;
         state= ShipmentState.AWAITING_PICKUP;
-    }
-    
-    /**
-     * Gets the pickup location of the represented cargo
-     */
-    public Warehouse getPickup(){
-        return pickup;
-    }
-    
-    /**
-     * Gets the drop-off location of the represented cargo
-     */
-    public Warehouse getDestination(){
-        return destination;
     }
     
     /**

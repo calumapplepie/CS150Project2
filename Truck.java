@@ -7,11 +7,12 @@
  * @author Calum McConnell
  * @version 0.1
  */
-public abstract class Truck implements Scheduleable
+public abstract class Truck implements Schedule
 {
     private final ShipmentOrder[] currentCargo;
     private final DeQueue<ShipmentOrder> manifest;
     private final Router router;
+    private ShipmentOrder currentOrder;
     private Point currentLocation;
     private boolean paused = false;
     
@@ -65,7 +66,18 @@ public abstract class Truck implements Scheduleable
      * then rejoice, and join the queue
      */
     public void move(){
-        
+        Warehouse destination;
+        switch(currentOrder.getStatus()){
+            case AWAITING_PICKUP:
+                destination = currentOrder.pickup;
+                break;
+            case MOVING:
+                destination = currentOrder.destination;
+            default:
+                // throw an unchecked exception: stuff broke
+                throw new Error("Invalid order status");
+        }
+        Point newLocation = currentLocation.calculateNext(destination.location,getMoveSpeed());
     }
     
     /**

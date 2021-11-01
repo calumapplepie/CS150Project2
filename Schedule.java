@@ -9,7 +9,7 @@
  * @author Calum McConnell
  * @version 2
  */
-public interface Scheduleable {
+public interface Schedule {
     /**
      * Called each hour, allowing the object to perform an action.
      */ 

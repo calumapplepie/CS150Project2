@@ -5,9 +5,9 @@
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class Warehouse implements Scheduleable
+public class Warehouse implements Schedule
 {
-    private final Point location;
+    public final Point location;
     // factorio is a very fun game: I take their terminology`
     private final DeQueue<Truck> enter = new DeQueue<Truck>();
     private final DeQueue<Truck> exits = new DeQueue<Truck>();
