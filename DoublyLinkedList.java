@@ -27,9 +27,15 @@ public class DoublyLinkedList<E>
      * 
      * @param index the index of the node to fetch
      * @return the node object at that index
+     * @throws IndexOutOfBoundsException when index is too large or too small
      */
     private Node<E> getNodeAtDex(int index){
         Node<E> retval;
+        
+        if(index >= len || index < 0){
+            throw new IndexOutOfBoundsException(
+                String.format("Index %d out of bounds for list length %d", index, len));
+        }
         
         if(len/2 - index > 0){
             // go forwards: we're close to the start
@@ -65,7 +71,36 @@ public class DoublyLinkedList<E>
      * @param index the index of the element to be removed
      */
     public void remove(int index){
-        // TODO    
+        // no modification to finalized arrays
+        if(finalized){
+            throw new IllegalStateException("This list has been locked: modifications are impossible");
+        }
+        
+        Node<E> target = getNodeAtDex(index);  
+        // check if we're at the front
+        if(target.prev != null){
+            target.prev.next = target.next;
+        }
+        else{
+            // change head
+            head = target.next;
+        }
+        
+        // check if we're at the end
+        if(target.next != null){
+            target.next.prev = target.prev;
+        }
+        else{
+            tail = target.prev;
+        }
+        
+        // check if the curr pointer is to the dropped element
+        if(curr == target){
+            curr = target.next;
+        }
+        
+        // decrement length
+        len --;
     }    
     
     /**
@@ -73,7 +108,7 @@ public class DoublyLinkedList<E>
      * @param data the value of the element to add
      */
     public void add(E data){
-        add(len-1, data);
+        add(len, data);
     }
     
     /**
@@ -85,7 +120,49 @@ public class DoublyLinkedList<E>
      * @param data the data which is within the element
      */
     public void add(int index, E data){
-        //TODO
+        if(finalized){
+            throw new IllegalStateException("This list has been locked: modifications are impossible");
+        }
+        
+        // make the new node
+        Node<E> newNode = new Node<E>();
+        newNode.data = data;
+        
+        if(index == 0){
+            newNode.next= head;
+            
+            // handle empty list case, with some nice symetry
+            // an if-and-if (as opposed to if-else-if) would be nice, but is niche
+            if(index==len){
+                tail = newNode;
+                // also init curr pointer
+                curr = newNode;
+            }
+            else{
+                head.prev = newNode;
+            }
+            head = newNode;
+        }
+        else if(index == len){
+            newNode.prev=tail;
+            tail.next = newNode;
+            tail = newNode;
+        }
+        else{
+            // insert into middle: this function call also does the bounds check
+            Node<E> target = getNodeAtDex(index);
+            
+            // set up our new node
+            newNode.prev = target.prev;
+            newNode.next = target;
+            // and integrate it
+            target.prev.next = newNode;
+            target.prev = newNode;
+        }
+        
+        // increment len, and pat yourself on the back.
+        len++;
+        
     }
     
     /**
@@ -106,6 +183,10 @@ public class DoublyLinkedList<E>
      * @return the element at the current 'fake head' of the queue
      */
     public E fakePop(){
+        // Throw an IndexOutOfBounds error (as opposed to a NPE)
+        if(curr == null){
+            throw new IndexOutOfBoundsException("fake pop went too far this time!");
+        }
         E retval = curr.data;
         curr = curr.next;
         return retval;
@@ -138,8 +219,27 @@ public class DoublyLinkedList<E>
         while(cur != null){
             G result = function.apply(cur.data);
             results.add(result);
+            cur = cur.next;
         }
         return results;
+    }
+    
+    /**
+     * This overrides the toString method, to provide a string representation
+     * of the entire dataset.
+     */
+    public String toString(){
+        String retval = "";
+        // iterate over the list again
+        // it'd be neat if we could use the applyFunctionToList shenanigans, but
+        // java lambdas don't work that way (for good reason)
+        Node<E> cur = head;
+        while(cur != null){
+            retval += cur.data.toString();
+            retval += ", ";
+            cur = cur.next;
+        }
+        return retval;
     }
     
     /**
@@ -212,6 +312,11 @@ public class DoublyLinkedList<E>
      */
     public DoublyLinkedList<E> clone(){
         DoublyLinkedList<E> retval = new DoublyLinkedList<E>();
+        // if our list is empty, return this as-is
+        if(len == 0){
+            return retval;
+        }
+        
         // we can't just copy over the head/tail refs, that'd be too easy
         // iterate through, duplicating each element and tacking it on
         Node<E> nextOrig = head;
@@ -234,7 +339,9 @@ public class DoublyLinkedList<E>
             
         }
         retval.tail = tmp;
+        // set up some auxilary variables
         retval.len = len;
+        retval.curr = retval.head;
         return retval;
     }
     
