@@ -49,6 +49,7 @@ public class Executer
      * viewing pleasure
      */
     public void start(){
+        prepare();
         
     }
     
@@ -65,12 +66,20 @@ public class Executer
             // generate from 1-3, inclusive
             int dockCount = randGen.nextInt(3)+1;
             Warehouse toAdd = new Warehouse(generatePoint(),dockCount);
+            warehouses.add(toAdd);
         }
 
         
         // now for the small trucks!
         for(int i = 0; i < runConfig.numSmallTrucks; i ++){
-            
+            Truck truck = new SmallTruck(generateManifest(), runConfig.routerClass,generatePoint());
+            trucks.add(truck);
+        }
+        
+        // and the mediums...
+        for(int i = 0; i < runConfig.numMediumTrucks; i++){
+            Truck truck = new MediumTruck(generateManifest(), runConfig.routerClass,generatePoint());
+            trucks.add(truck);
         }
     }
     

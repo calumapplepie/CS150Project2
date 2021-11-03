@@ -30,6 +30,7 @@ public class Configuration
     
     public final int numOrdersPerTruck;
     public final int routerID;
+    public final Class<? extends Router> routerClass;
     
     public final int canvasHeight;
     public final int canvasWidth;
@@ -45,6 +46,7 @@ public class Configuration
         
         numOrdersPerTruck = orders;
         routerID = router;
+        routerClass = getRouterFromId(routerID);
         
         canvasHeight = height;
         canvasWidth = width;
