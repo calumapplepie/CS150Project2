@@ -73,6 +73,8 @@ public class Configuration
             //sed 's/public final //g;s/\;/ = scans.nextInt();/'
             // over the instance variable declarations in this class
             // is completly and utterly baseless.
+            
+            // get a class that represents the router we will be using
 
             retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasHeight, canvasWidth);
             // only a monster would have used
@@ -87,9 +89,26 @@ public class Configuration
         catch(Exception e){
             System.err.println("Something went wrong reading the config");  
             System.out.println("Critical error! something broke in config!");
-            
+            System.err.println(e);
         }
         
         return retval;
+    }
+    
+    /**
+     * This method converts a given router ID into a Class object that
+     * represents that router.  Other classes will make use of this object to
+     * create the routers that will be used throughout.
+     * 
+     * This is overly complicated, but I wanted to be able to try out different
+     * router designs, and this is one of the simpler ways that can be done
+     */
+    private static Class<? extends Router> getRouterFromId(int id){
+        switch(id){
+            case 0:
+                return NonsenseRouter.class;
+            default:
+                throw new Error("Invalid router ID");
+        }
     }
 }

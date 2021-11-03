@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.lang.reflect.Constructor;
 
 /**
  * This is a truck.  Most functionality is provided in this class,
@@ -24,9 +25,13 @@ public abstract class Truck implements Schedule, Render
      * generators flexibility in what they create: the generator
      * class, not the truck, decides what the configuration is.
      * 
-     * @param cargoArray an array representing the cargo: it should
-     * be empty to start, and of length equal to how much cargo the truck
-     * can hold.
+     * @param cargoSize the number of cargo items that this truck can hold
+     * 
+     * @param cargoManifest the manifest object that this truck will be working from
+     * 
+     * @param routerClass A Constructor object representing a constructor for a 
+     * Router subclass, which wil be used to build our routers as we go.
+     * 
      * 
      * @param cargoManifest a complete, finalized manifest of cargo orders,
      * which will be carried out by this truck
@@ -34,15 +39,35 @@ public abstract class Truck implements Schedule, Render
     public Truck(
         int cargoSize, 
         DeQueue<ShipmentOrder> cargoManifest,
-        Router router,
+        Class<? extends Router> routerClass,
         Point startingPoint){
             currentCargo = new ShipmentOrder[cargoSize];
             manifest = cargoManifest;
-            this.router = router;
             currentLocation = startingPoint;
             
             // make extra sure nobody can screw with our orders
             manifest.lock();
+            
+            // Now, lets create our router!
+            try{
+                Constructor<? extends Router> routerFactory = 
+                    routerClass.getConstructor(cargoManifest.getClass(),ShipmentOrder[].class);
+                router = routerFactory.newInstance(cargoManifest,currentCargo);
+                // I could have done this without reflection, by building the router seperately
+                // and then passing it in, but every one of my projects needs at least one thing
+                // that is totally overdone.
+            }
+            catch(Exception e){
+                // I also could have just used lambdas, and passed those in.  However,
+                // I haven't done much with reflection before, and I wanted to try it out
+                System.err.println("Unexpected exception when building the router");
+                System.err.println(e);
+                // we absolutely must terminate: otherwise, we failed to initialize
+                // a final field
+                throw new Error("Failed to create router object");
+            }
+            
+            
     }
     
     /**

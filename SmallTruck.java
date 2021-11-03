@@ -7,7 +7,7 @@
  */
 public class SmallTruck extends Truck
 {
-    SmallTruck(DeQueue<ShipmentOrder> cargo, Router router, Point startingPoint){
+    SmallTruck(DeQueue<ShipmentOrder> cargo, Class<? extends Router> router, Point startingPoint){
         super(1, cargo, router, startingPoint);
     }
     

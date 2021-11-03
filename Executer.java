@@ -1,5 +1,6 @@
 import java.util.function.Supplier;
 import java.util.Random;
+import java.lang.reflect.Constructor;
 
 /**
  * Executes a single run of a given state: constructing
@@ -117,17 +118,5 @@ public class Executer
         }
         
         return retval;
-    }
-    
-    /**
-     * This creates a router for the given manifest, based on 
-     */
-    private Router createRouter(DeQueue<ShipmentOrder> manifest){
-        switch(runConfig.routerID){
-            case 0:
-                return new NonsenseRouter(manifest);
-            default:
-                throw new Error("Invalid router ID");
-        }
     }
 }

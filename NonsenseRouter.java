@@ -9,11 +9,12 @@
 public class NonsenseRouter extends Router
 {
     DeQueue<ShipmentOrder> manifest;
-    public NonsenseRouter(DeQueue<ShipmentOrder> carg){
+    public NonsenseRouter(DeQueue<ShipmentOrder> carg, ShipmentOrder[] currentCargo){
         manifest = carg;
     }
     
-    public ShipmentOrder getNextOrder(){
+    public ShipmentOrder getNextOrder(Point cur){
+        // point is ignored
         // TODO
         // return a random, but valid, order to fulfill
         return null;

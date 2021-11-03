@@ -22,6 +22,6 @@ public abstract class Router
      * 
      * @return The next order to fulfill: it may be one that is already in-
      */
-    public abstract ShipmentOrder getNextOrder();
+    public abstract ShipmentOrder getNextOrder(Point currentLocation);
     
 }
