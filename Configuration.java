@@ -13,14 +13,36 @@
  */
 public class Configuration
 {
+    public final int numSmallTrucks;
+    public final int numMediumTrucks;
+    public final int numLargeTrucks;
+    public final int numWarehouses;
+    
+    public final int numOrdersPerTruck;
+    public final int routerID;
+    
+    public final int canvasHeight;
+    public final int canvasWidth;
+    
     /**
      * Private constructor ensures that configuration objects are
      * only produced through reading of a file.  If, in future, we wish to
      * support a person writing their own configuration and then saving it
      * to disk from within the program, this API might need to be changed.
      */
-    private Configuration(){
+    private Configuration(int small, int medium, int large, int warehouses,
+                            int orders, boolean balance, int router,
+                            int height, int width){
+        numSmallTrucks = small;
+        numMediumTrucks= medium;
+        numLargeTrucks = large;
+        numWarehouses = warehouses;
         
+        numOrdersPerTruck = orders;
+        routerID = router;
+        
+        canvasHeight = height;
+        canvasWidth = width;
     }
     
     public static DeQueue<Configuration> readConfigFile(String filename){
