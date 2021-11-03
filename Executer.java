@@ -89,13 +89,45 @@ public class Executer
      * I know you won't do anything silly like that!
      */
     private DeQueue<ShipmentOrder> generateManifest(){
-        if(warehouses.size()<2){
-            throw new Error("I told you not to be silly!");
+        if(warehouses.size()!= runConfig.numWarehouses || warehouses.size() < 2){
+            throw new Error("I told you not to be silly!  Build those warehouses!");
         }
         
         // i'm tired of writing out that type, lets make the the compiler decide it
         var retval = new DeQueue<ShipmentOrder>();
         
+        // alrighty, now lets build the orders!
+        for(int i = 0; i < runConfig.numOrdersPerTruck; i++){
+            int dex1, dex2;
+            
+            // Generate indexes until they arent identical
+            do{
+                // generate an index of warehouse to get, from 1 to the number of warehouses
+                dex1 = randGen.nextInt(runConfig.numWarehouses);
+                dex2 = randGen.nextInt(runConfig.numWarehouses);
+            } while(dex1 == dex2);
+            // That might be overkill, since I think my code could tolerate routing
+            // out of and back into one warehouse.  But I think it mentions or implies
+            // somewhere that the destination and origin should be different.
+            
+            // now, build the order, and add it to the list
+            Warehouse origin = warehouses.get(dex1);
+            Warehouse destination = warehouses.get(dex2);
+            retval.add(new ShipmentOrder(origin,destination));
+        }
+        
         return retval;
+    }
+    
+    /**
+     * This creates a router for the given manifest, based on 
+     */
+    private Router createRouter(DeQueue<ShipmentOrder> manifest){
+        switch(runConfig.routerID){
+            case 0:
+                return new NonsenseRouter(manifest);
+            default:
+                throw new Error("Invalid router ID");
+        }
     }
 }

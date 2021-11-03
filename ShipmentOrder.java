@@ -37,9 +37,23 @@ public class ShipmentOrder
     
     /**
      * Moves the current shipment state to the next stage
+     * 
+     * @throws IllegalStateException if the shipment is complete or invalid
      */
     public void nextState(){
-        //TODO
+        switch(state){
+            case AWAITING_PICKUP:
+                state = ShipmentState.MOVING;
+                return;
+            case MOVING:
+                state = ShipmentState.DROPPED_OFF;
+                return;
+            case DROPPED_OFF:
+                System.err.println("Error: shipment already completed.  No next state");
+                // fall-through
+            default:
+                throw new IllegalStateException("Shipment state already complete or invalid");
+        }
     }
 }
 

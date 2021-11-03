@@ -53,7 +53,7 @@ public class Point
         if(! (o instanceof Point)){
             return false;
         }
-        return equals((Point ) o);
+        return equals((Point) o);
     }
     
     /**
