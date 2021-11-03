@@ -1,16 +1,31 @@
+import java.util.function.Supplier;
+import java.util.Random;
 
 /**
  * Executes a single run of a given state: constructing
- * the requested objects, and then
+ * the requested objects, and then modelling them.
+ * 
+ * This object is immutable once constructed, though some
+ * of its members are mutable.
  *
  * @author Calum McConnell
  * @version 0.0.1
  */
 public class Executer
 {
-    private DoublyLinkedList<Truck> trucks;
-    private DoublyLinkedList<Warehouse> warehouses;
+    private final DoublyLinkedList<Truck> trucks = new DoublyLinkedList<Truck>();
+    private final DoublyLinkedList<Warehouse> warehouses = new DoublyLinkedList<Warehouse>();
+    private final Configuration runConfig;
+    private final Random randGen;
     
+    /**
+     * Constructs an executor, which will conduct a run based on the given seed
+     * and configuration
+     */
+    public Executer(Configuration config, long seed){
+        randGen = new Random(seed);
+        runConfig = config;
+    }
     
     /**
      * Called in a loop by start(), this method will run
@@ -39,7 +54,48 @@ public class Executer
     /**
      * This does the groundwork: generating all the objects needed
      */
-    public void prepare(Configuration runConfig, long randomSeed){
+    private void prepare(){              
+        // this generates our manifests. we define this before we can
+        // actually invoke it, 
+                
+        // now, lets build the warehouses
+        // we need to do this before the trucks can be made
+        for(int i = 0; i < runConfig.numWarehouses; i++){
+            // generate from 1-3, inclusive
+            int dockCount = randGen.nextInt(3)+1;
+            Warehouse toAdd = new Warehouse(generatePoint(),dockCount);
+        }
+
         
+        // now for the small trucks!
+        for(int i = 0; i < runConfig.numSmallTrucks; i ++){
+            
+        }
+    }
+    
+    /**
+     * This generates random point objects from the random number generator,
+     * reducing boilerplate.  They range from (0,0) to (canvasWidth,canvasHeight)
+     */
+    private Point generatePoint(){
+        return new Point(
+                randGen.nextDouble()*runConfig.canvasHeight,
+                randGen.nextDouble()*runConfig.canvasWidth);
+    }
+    
+    /**
+     * Produces random manifests.  Calling this before the list of warehouses
+     * is initialized is a bad idea.  Of course, this method is private, so
+     * I know you won't do anything silly like that!
+     */
+    private DeQueue<ShipmentOrder> generateManifest(){
+        if(warehouses.size()<2){
+            throw new Error("I told you not to be silly!");
+        }
+        
+        // i'm tired of writing out that type, lets make the the compiler decide it
+        var retval = new DeQueue<ShipmentOrder>();
+        
+        return retval;
     }
 }

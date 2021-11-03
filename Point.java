@@ -44,6 +44,17 @@ public class Point
         //TODO
         return new Point(0,0);
     }
+
+    public boolean equals(Object o){
+        // I HATE JAVA.  WHY DOES EQUIVALENCY NEED TO BE SO HARD?
+        // WHY DOES EVERY PROGRAM NEED THIS TYPE OF BOILERPLATE, THAT
+        // STILL RESULTS IN A TECHNICALLY-INCORRECT RESULT IN JAVA'S INHERITENCE?
+        // WHY????
+        if(! (o instanceof Point)){
+            return false;
+        }
+        return equals((Point ) o);
+    }
     
     /**
      * Returns true if both point objects refer to the same coordinate.
