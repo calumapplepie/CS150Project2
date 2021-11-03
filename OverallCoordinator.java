@@ -13,6 +13,11 @@ public class OverallCoordinator
      * entire rest of this whole mess of a program to run
      */
     public static void main(String args){
-        DeQueue<RunCoordinator> states;   
+        DeQueue<RunCoordinator> states = new DeQueue<RunCoordinator>();
+        String[] confFiles = {"basic"};
+        for(String i : confFiles){
+            Configuration c = Configuration.readConfigFile(i);
+            states.add(new RunCoordinator(c));
+        }
     }
 }

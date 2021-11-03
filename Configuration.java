@@ -33,6 +33,7 @@ public class Configuration
     
     public final int canvasHeight;
     public final int canvasWidth;
+    public final int initialRandomSeed;
     
     protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, int router,
@@ -47,6 +48,12 @@ public class Configuration
         
         canvasHeight = height;
         canvasWidth = width;
+        
+        // initialRandomSeed is equal to the sum of all other fields
+        // this makes it deterministic for a given conf-file, while causing
+        // changes in that conf file to propigate to large changes in the simulation
+        
+        initialRandomSeed = small + medium + large + warehouses + orders + router + height + width;
     }
     
     public static Configuration readConfigFile(String filename){
