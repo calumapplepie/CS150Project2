@@ -1,3 +1,6 @@
+import java.util.Scanner;
+import java.io.File;
+
 
 /**
  * Manages the configuration: reading it in from the file, and then
@@ -32,7 +35,7 @@ public class Configuration
     public final int canvasWidth;
     
     protected Configuration(int small, int medium, int large, int warehouses,
-                            int orders, boolean balance, int router,
+                            int orders, int router,
                             int height, int width){
         numSmallTrucks = small;
         numMediumTrucks= medium;
@@ -46,7 +49,47 @@ public class Configuration
         canvasWidth = width;
     }
     
-    public static DeQueue<Configuration> readConfigFile(String filename){
-        return new DeQueue<Configuration>();
+    public static Configuration readConfigFile(String filename){
+        Configuration retval = null;
+        
+        // try-with-resources: the resource here is a scanner, constructed
+        // with an annonomys file.
+        try(Scanner scans = new Scanner(new File(filename))){
+            // The file format is simply a space-seperated list of the fields
+            // contained in the previous section.  This is not a sophisticated format:
+            // fancy config files take time to write manually without API classes.
+            int numSmallTrucks = scans.nextInt();
+            int numMediumTrucks = scans.nextInt();
+            int numLargeTrucks = scans.nextInt();
+            int numWarehouses = scans.nextInt();
+            
+            int numOrdersPerTruck = scans.nextInt();
+            int routerID = scans.nextInt();
+            
+            int canvasHeight = scans.nextInt();
+            int canvasWidth = scans.nextInt();
+            
+            // the accusation that the above lines were produced by running
+            //sed 's/public final //g;s/\;/ = scans.nextInt();/'
+            // over the instance variable declarations in this class
+            // is completly and utterly baseless.
+
+            retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasHeight, canvasWidth);
+            // only a monster would have used
+            //sed 's/.*public final int//g;s/\;/, /'
+            // to produce the above line
+
+        }
+        // this catch will get any exception relating to an invalid config:
+        // including one that is badly formatted or nonexistent.  that's
+        // very general, but more precise error handling is out-of-scope
+        // for this project
+        catch(Exception e){
+            System.err.println("Something went wrong reading the config");  
+            System.out.println("Critical error! something broke in config!");
+            
+        }
+        
+        return retval;
     }
 }

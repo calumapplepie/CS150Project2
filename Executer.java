@@ -39,7 +39,7 @@ public class Executer
     /**
      * This does the groundwork: generating all the objects needed
      */
-    public void prepare(){
+    public void prepare(Configuration runConfig, long randomSeed){
         
     }
 }
