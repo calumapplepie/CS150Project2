@@ -6,8 +6,15 @@
  * Most configuration systems are key-value stores.  They are each based on 
  * a Map data structure.  Unfortunately, we haven't learned about Maps yet,
  * and implementing my own for no good reason would be a bit silly.
- * So, we instead have this: A key-value system that isn't.
- *
+ * So, we instead have this: A key-value system that is more like a named tuple.
+ * (the julia term for this)
+ * <p>
+ * The data fields are public and final.  This doesn't break encapsulation:
+ * as they are final and primitive, the user cannot in any way change them.
+ * That also makes this object immutable once created.  
+ * The constructor is protected, to allow for testing while still 'advising'
+ * against the manual creation of Configuration objects.
+ * 
  * @author Calum McConnell
  * @version 0.0.1
  */
@@ -24,13 +31,7 @@ public class Configuration
     public final int canvasHeight;
     public final int canvasWidth;
     
-    /**
-     * Private constructor ensures that configuration objects are
-     * only produced through reading of a file.  If, in future, we wish to
-     * support a person writing their own configuration and then saving it
-     * to disk from within the program, this API might need to be changed.
-     */
-    private Configuration(int small, int medium, int large, int warehouses,
+    protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, boolean balance, int router,
                             int height, int width){
         numSmallTrucks = small;
