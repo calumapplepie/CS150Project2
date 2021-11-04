@@ -5,11 +5,11 @@
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class NonsenseRouter extends Router
+public class BadRouter extends Router
 {
     DeQueue<ShipmentOrder> manifest;
     ShipmentOrder[] currentCargo;
-    public NonsenseRouter(DeQueue<ShipmentOrder> orders, ShipmentOrder[] hold){
+    public BadRouter(DeQueue<ShipmentOrder> orders, ShipmentOrder[] hold){
         // clone manifest, to allow us to use the queue's popping methods
         manifest = orders.clone();
         currentCargo = hold;

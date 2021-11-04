@@ -36,6 +36,22 @@ public class ShipmentOrder
     }
     
     /**
+     * Gets the distance between the next target and the given point.
+     * If the order has not been picked up, this target is the pickup spot:
+     * otherwise, its the destination
+     */
+    public double getDistanceToTarget(Point p){
+        Point other;
+        if(state == ShipmentState.AWAITING_PICKUP){
+            other = pickup.location;
+        }
+        else{
+            other = destination.location;
+        }
+        return other.calculateDistance(p);
+    }
+    
+    /**
      * Moves the current shipment state to the next stage
      * 
      * @throws IllegalStateException if the shipment is complete or invalid

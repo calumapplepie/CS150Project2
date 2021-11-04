@@ -115,7 +115,7 @@ public class Configuration
     private static Class<? extends Router> getRouterFromId(int id){
         switch(id){
             case 0:
-                return NonsenseRouter.class;
+                return BadRouter.class;
             default:
                 throw new Error("Invalid router ID");
         }

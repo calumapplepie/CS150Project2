@@ -44,6 +44,15 @@ public class Point
         //TODO
         return new Point(0,0);
     }
+    
+    /**
+     * Determines the distance between two points on the grid.
+     */
+    public double calculateDistance(Point that){
+        double xDelta2 = Math.pow(this.xPos - that.xPos,2);
+        double yDelta2 = Math.pow(this.yPos - that.yPos,2);
+        return Math.sqrt(xDelta2+yDelta2);
+    }
 
     public boolean equals(Object o){
         // I HATE JAVA.  WHY DOES EQUIVALENCY NEED TO BE SO HARD?
@@ -60,7 +69,7 @@ public class Point
      * Returns true if both point objects refer to the same coordinate.
      * Tolerates a small epsilon.
      * 
-     * @return true if the points are equal to each
+     * @return true if the points are equal to each other
      */
     public boolean equals(Point p){
         return floatingEquals(xPos, p.xPos) && floatingEquals(yPos,p.yPos);
@@ -76,7 +85,10 @@ public class Point
     public static boolean floatingEquals(double a, double b){
         // we make sure that difference between the two is less than 10
         // Units of Least precision: ie, that it is within 10 numbers
-        // of the right answer
-        return Math.abs(a-b) < Math.ulp(a) * 10;
+        // of the right answer.
+        // We also have an absolute tolerance, in case we are
+        // comparing two near-zero values
+        double delta = Math.abs(a-b);
+        return delta < Math.ulp(a/2) * 10 || delta < 1e-9;
     }
 }

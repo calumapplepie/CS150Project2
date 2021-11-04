@@ -81,6 +81,12 @@ public class Executer
             Truck truck = new MediumTruck(generateManifest(), runConfig.routerClass,generatePoint());
             trucks.add(truck);
         }
+        
+        // and the larges
+        for(int i = 0; i < runConfig.numLargeTrucks; i++){
+            Truck truck = new LargeTruck(generateManifest(), runConfig.routerClass,generatePoint());
+            trucks.add(truck);
+        }
     }
     
     /**
