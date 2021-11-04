@@ -40,4 +40,17 @@ public class DeQueue<E> extends DoublyLinkedList<E>
     public E peekBack(){
         return get(size()-1);
     }
+    
+    public DeQueue<E> clone(){
+        // bit of a nasty hack: but a necessary one: otherwise, the user can
+        // only get DoublyLinkedList clones, not clones of this.
+        
+        // we construct a new DeQueue, then append this queue onto it.
+        // append necessarily involves conducting a shallow clone:
+        // so we do clone this.
+        DeQueue<E> retval = new DeQueue<E>();
+        retval.append(this);
+        
+        return retval;
+    }
 }

@@ -286,7 +286,7 @@ public class DoublyLinkedList<E>
      * Appends another list onto the end of this one:
      * it is not a deep copy, but it is very fast
      * @param other another list, with a compatable type, which will be
-     * grafted onto this one
+     * grafted onto this one.  Must not be empty.
      */
     public void append(DoublyLinkedList<E> other){
         // switch to a clone of other, to avoid breakage

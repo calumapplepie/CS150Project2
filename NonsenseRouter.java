@@ -1,7 +1,6 @@
 
 /**
- * Selects a random destination, seeded off the position of the first
- * point in the manifest
+ * Selects each order in the manifest, one after the other.
  *
  * @author Calum McConnell
  * @version 0.0.1
@@ -9,14 +8,18 @@
 public class NonsenseRouter extends Router
 {
     DeQueue<ShipmentOrder> manifest;
-    public NonsenseRouter(DeQueue<ShipmentOrder> carg, ShipmentOrder[] currentCargo){
-        manifest = carg;
+    ShipmentOrder[] currentCargo;
+    public NonsenseRouter(DeQueue<ShipmentOrder> orders, ShipmentOrder[] hold){
+        // clone manifest, to allow us to use the queue's popping methods
+        manifest = orders.clone();
+        currentCargo = hold;
     }
     
     public ShipmentOrder getNextOrder(Point cur){
-        // point is ignored
-        // TODO
-        // return a random, but valid, order to fulfill
-        return null;
+        // point is ignored: simply returns the next order
+        if(currentCargo[0] != null){
+            return currentCargo[0];
+        }
+        return manifest.popFront();
     }
 }
