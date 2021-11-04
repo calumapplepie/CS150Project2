@@ -55,7 +55,9 @@ public class Configuration
         // this makes it deterministic for a given conf-file, while causing
         // changes in that conf file to propigate to large changes in the simulation
         
-        initialRandomSeed = small + medium + large + warehouses + orders + router + height + width;
+        // the router choice is excluded, so that routers can be compared under identical conditions
+        
+        initialRandomSeed = small + medium + large + warehouses + orders + height + width;
     }
     
     public static Configuration readConfigFile(String filename){
@@ -116,6 +118,8 @@ public class Configuration
         switch(id){
             case 0:
                 return BadRouter.class;
+            case 1:
+                return BetterRouter.class;
             default:
                 throw new Error("Invalid router ID");
         }

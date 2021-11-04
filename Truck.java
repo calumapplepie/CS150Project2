@@ -75,7 +75,39 @@ public abstract class Truck implements Schedule, Render
      * loading queue and prepare to empty cargo.
      */
     public void action(){
+        // go to router if no order
+        if(currentOrder == null){
+            currentOrder = router.getNextOrder(currentLocation);
+        }
         
+        // move towards target
+        currentLocation = currentLocation.calculateNext(currentOrder.getTargetWarehouse().location, this.getMoveSpeed());
+        
+    }
+    
+    /**
+     * Moves the current order on to the next stage; intended only
+     * for use by Warehouses
+     */
+    protected void loadingComplete(){
+        if(paused != false){
+            throw new Error("A truck is trying to leave a warehouse it never entered");
+        }
+        paused = false;
+        currentOrder.nextState();
+        if(currentOrder.getStatus() == ShipmentState.MOVING){
+            // place the current order in the first empty slot in the array
+            int i = 0;
+            while(currentCargo[i] != null){
+                // this will throw an exception if the array is full:
+                // that is OK, since we shouldnt be in this method if it is
+                i++;
+            }
+            currentCargo[i] = currentOrder;
+        }
+        
+        // set current order to null to trigger re-routing on next cycle
+        currentOrder = null;
     }
     
     /**
@@ -84,7 +116,19 @@ public abstract class Truck implements Schedule, Render
      * changes in the past cycle: eg, cargo added or removed.
      */
     public String status(){
+        // TODO
         return "";
+    }
+    
+    public boolean isComplete(){
+        // restart the fake queue
+        manifest.resetFakeQueue();
+        for(int i = 0; i < manifest.size(); i++){
+            if(manifest.fakePop().getStatus() != ShipmentState.DROPPED_OFF){
+                return false;
+            }
+        }
+        return true;
     }
     
     /**

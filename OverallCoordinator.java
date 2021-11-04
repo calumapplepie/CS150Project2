@@ -14,7 +14,7 @@ public class OverallCoordinator
      */
     public static void main(String[] args){
         DeQueue<RunCoordinator> states = new DeQueue<RunCoordinator>();
-        String[] confFiles = {"basic-config.txt"};
+        String[] confFiles = {"basic-config.txt","faster-config.txt"};
         for(String i : confFiles){
             Configuration c = Configuration.readConfigFile(i);
             states.add(new RunCoordinator(c));

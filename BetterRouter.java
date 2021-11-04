@@ -45,8 +45,7 @@ public class BetterRouter extends Router
                 if(s.getStatus() == ShipmentState.DROPPED_OFF){
                     return -1.0;
                 }
-                return s.getDistanceToTarget(currentSpot);
-                
+                return s.getTargetWarehouse().location.calculateDistance(currentSpot);
             });
         
         // iterate through: we can't just start from the first and find the least,

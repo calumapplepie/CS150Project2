@@ -18,6 +18,7 @@ public class Executer
     private final DoublyLinkedList<Warehouse> warehouses = new DoublyLinkedList<Warehouse>();
     private final Configuration runConfig;
     private final Random randGen;
+    private int ticks = 0;
     
     /**
      * Constructs an executor, which will conduct a run based on the given seed

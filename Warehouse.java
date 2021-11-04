@@ -9,8 +9,10 @@ import java.awt.Graphics;
 public class Warehouse implements Schedule, Render
 {
     public final Point location;
-    // factorio is a very fun game: I take their terminology`
+    public final int docks;
     private final DeQueue<Truck> enter = new DeQueue<Truck>();
+    // This queue holds a truck for a single round, to prevent one from
+    // entering and leaving on the same tick
     private final DeQueue<Truck> exits = new DeQueue<Truck>();
     
     /**
@@ -20,13 +22,14 @@ public class Warehouse implements Schedule, Render
      */
     public Warehouse(Point p, int docks){
         location = p;
+        this.docks = docks;
     }
     
     /**
      * Adds the given truck to the entrance queue
      */
     public void joinQueue(Truck t){
-        
+        enter.add(t);
     }
     
     /**
@@ -35,7 +38,16 @@ public class Warehouse implements Schedule, Render
      * before being placed into an exit queue.  
      */
     public void action(){
-        
+        // empty the exiting queue
+        while(exits.size() != 0){
+            Truck target = exits.popFront();
+            target.loadingComplete();
+        }
+        // pull a number of trucks equal to docks out of the entrance queue,
+        // placing them into the exiting queue
+        for(int i = 0; i < docks; i++){
+            exits.add(enter.popFront());
+        }
     }
     
     /**

@@ -35,14 +35,25 @@ public class Point
      * instead
      * 
      * @param other The other point, which we are "heading towards"
-     * @param dist the distance to move towards that point.
+     * @param distToMove the distance to move towards that point.
      * @return a new point, "dist" units closer to (or else simply equal to)
      * the other point.
      */
-    public Point calculateNext(Point other, double dist)
+    public Point calculateNext(Point that, double distToMove)
     {
-        //TODO
-        return new Point(0,0);
+        // Time for some vector math!
+        // Calculate a vector in the directon of 'that' of length dist
+        // Done by converting the (this->that) vector into a unit vector,
+        // then multiplying that unit vector by the distance to move.
+        
+        // in other words, take the delta for each axis, divide that by
+        // the total length of the vector, then multiply by the amount
+        // the new vector should move
+        double totalDist = calculateDistance(that);
+        double xDelta = (that.xPos - this.xPos)/totalDist * distToMove;
+        double yDelta = (that.yPos - this.yPos)/totalDist * distToMove;
+        
+        return new Point(xPos+xDelta,yPos+yDelta);
     }
     
     /**

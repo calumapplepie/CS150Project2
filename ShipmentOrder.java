@@ -36,19 +36,18 @@ public class ShipmentOrder
     }
     
     /**
-     * Gets the distance between the next target and the given point.
+     * Gets the target warehouse.
      * If the order has not been picked up, this target is the pickup spot:
      * otherwise, its the destination
      */
-    public double getDistanceToTarget(Point p){
-        Point other;
+    public Warehouse getTargetWarehouse(){
         if(state == ShipmentState.AWAITING_PICKUP){
-            other = pickup.location;
+            return pickup;
         }
-        else{
-            other = destination.location;
+        else if(state == ShipmentState.MOVING){
+            return destination;
         }
-        return other.calculateDistance(p);
+        throw new IllegalStateException("Package delivered, no target warehouse exists");
     }
     
     /**
