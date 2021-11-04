@@ -18,6 +18,7 @@ public class Executer
     private final DoublyLinkedList<Warehouse> warehouses = new DoublyLinkedList<Warehouse>();
     private final Configuration runConfig;
     private final Random randGen;
+    private final int timeDelta = 500;
     private int ticks = 0;
     
     /**
@@ -52,6 +53,23 @@ public class Executer
     public void start(){
         prepare();
         
+        // We want to run untill execute() returns false.  But to make the graphics understandable,
+        // we don't want tu run too often.  This starts one tick every timeDelta (class variable) miliseconds,
+        // counting from when the last tick started.  Thus, most noise in the execution time of execute()
+        // is insulated away.
+        long timeStart = System.currentTimeMillis();
+        while(execute()){
+            long timeToSleep = timeDelta -(System.currentTimeMillis() - timeStart);
+            timeStart = System.currentTimeMillis();
+            // now sleep, but not for a negative duration
+            try{
+                Thread.sleep(Math.max(timeToSleep, 0));
+            }
+            catch(Exception e){
+                System.err.println("We were interruped, apparently!?!?");
+                throw new Error("Interrupted, despite a lack of multithreading", e);
+            }
+        }
     }
     
     /**
