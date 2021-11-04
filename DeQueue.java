@@ -46,10 +46,10 @@ public class DeQueue<E> extends DoublyLinkedList<E>
         // only get DoublyLinkedList clones, not clones of this.
         
         // we construct a new DeQueue, then append this queue onto it.
-        // append necessarily involves conducting a shallow clone:
-        // so we do clone this.
+        // make sure to conduct a clone first: since append conducts its own clone,
+        // we'd get an unintentional recursion otherwise
         DeQueue<E> retval = new DeQueue<E>();
-        retval.append(this);
+        retval.append(super.clone());
         
         return retval;
     }

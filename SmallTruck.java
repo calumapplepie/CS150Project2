@@ -9,7 +9,6 @@ public class SmallTruck extends Truck
 {
     SmallTruck(DeQueue<ShipmentOrder> cargo, Class<? extends Router> router, Point startingPoint){
         super(1, cargo, router, startingPoint);
-        System.out.println("built");
     }
     
     public double getMoveSpeed(){

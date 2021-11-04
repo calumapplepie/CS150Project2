@@ -98,7 +98,7 @@ public class Configuration
         catch(Exception e){
             System.err.println("Something went wrong reading the config");  
             System.out.println("Critical error! something broke in config!");
-            System.err.println(e);
+            e.printStackTrace();
         }
         
         return retval;

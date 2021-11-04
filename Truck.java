@@ -61,7 +61,7 @@ public abstract class Truck implements Schedule, Render
                 // I also could have just used lambdas, and passed those in.  However,
                 // I haven't done much with reflection before, and I wanted to try it out
                 System.err.println("Unexpected exception when building the router");
-                System.err.println(e);
+                e.printStackTrace();
                 // we absolutely must terminate: otherwise, we failed to initialize
                 // a final field
                 throw new Error("Failed to create router object");

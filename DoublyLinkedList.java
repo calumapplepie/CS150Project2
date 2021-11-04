@@ -292,10 +292,15 @@ public class DoublyLinkedList<E>
         // switch to a clone of other, to avoid breakage
         other = other.clone();
         
-        // change tail to point at the other's head as the next element
-        // and vice versa for the other head
-        tail.next = other.head;
-        other.head.next = tail;
+        if(len != 0){
+            // change tail to point at the other's head as the next element
+            // and vice versa for the other head
+            tail.next = other.head;
+            other.head.next = tail;
+        }
+        else{
+            head = other.head;
+        }
         
         // now move our tail to the end of the combined list, and increase len
         tail = other.tail;
