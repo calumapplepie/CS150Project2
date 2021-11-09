@@ -13,7 +13,7 @@ import java.lang.reflect.Constructor;
  * @author Calum McConnell
  * @version 0.1
  */
-public abstract class Truck extends JComponent implements Schedule, Render
+public abstract class Truck implements Schedule, Render
 {
     private final ShipmentOrder[] currentCargo;
     private final DeQueue<ShipmentOrder> manifest;
@@ -202,10 +202,5 @@ public abstract class Truck extends JComponent implements Schedule, Render
             // increment coordinate for next loop
             horisontalCoordinate += Configuration.objectSize;
         }
-    }
-    
-    @Override
-    public void paintComponent(Graphics g){
-        draw( (Graphics2D) g);
     }
 }

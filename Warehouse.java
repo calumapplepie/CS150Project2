@@ -1,5 +1,6 @@
 import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
 
 import javax.swing.JComponent;
 
@@ -9,7 +10,7 @@ import javax.swing.JComponent;
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class Warehouse extends JComponent implements Schedule, Render
+public class Warehouse implements Schedule, Render
 {
     public final Point location;
     public final int docks;
@@ -62,14 +63,12 @@ public class Warehouse extends JComponent implements Schedule, Render
     }
     
     public void draw(Graphics2D g){
-        double verticalCoordinate = location.yPos - Configuration.objectSize/2;
-        double horisontalCoordinate = location.xPos - Configuration.objectSize/2;
-
+        double y = location.yPos - Configuration.objectSize/2;
+        double x = location.xPos - Configuration.objectSize/2;
+        Rectangle2D rect = new Rectangle2D.Double(x,y,Configuration.objectSize,Configuration.objectSize);
+        g.setColor(Configuration.warehouseColor);
+        g.fill(rect);
 
     }
-    
-    @Override
-    public void paintComponent(Graphics g){
-        draw( (Graphics2D) g);
-    }
+
 }

@@ -155,9 +155,12 @@ public class Executer
      * NOTE THIS IN FINAL REPORT
      */
     private void prepareGraphics(){
+        SimulationImage comp = new SimulationImage();
         // add all the trucks and warehouses to the JFrame
-        trucks.applyFunctionToList( (Truck t) -> window.add(t));
-        warehouses.applyFunctionToList( (Warehouse t) -> window.add(t));
+        trucks.applyFunctionToList( (Truck t) -> {comp.add(t); return null;});
+        warehouses.applyFunctionToList( (Warehouse t) -> {comp.add(t); return null;});
+        window.add(comp);
+        window.setVisible(true);
     }
     
     /**
