@@ -83,9 +83,19 @@ public abstract class Truck implements Schedule, Render
         if(currentOrder == null){
             currentOrder = router.getNextOrder(currentLocation);
         }
+        // What is our destiny?
+        Warehouse destination = currentOrder.getTargetWarehouse();
         
         // move towards target
-        currentLocation = currentLocation.calculateNext(currentOrder.getTargetWarehouse().location, this.getMoveSpeed());
+        currentLocation = currentLocation.calculateNext(destination.location, this.getMoveSpeed());
+        
+        // if we've arrived
+        if(currentLocation.equals(destination.location)){
+            // stop moving
+            paused = true;
+            // join the warehouse's queue
+            destination.joinQueue(this);
+        }
         
     }
     
@@ -108,6 +118,14 @@ public abstract class Truck implements Schedule, Render
                 i++;
             }
             currentCargo[i] = currentOrder;
+        }
+        else{
+            // we need to pull the order out of the array, it's completed
+            for(int i = 0; i < currentCargo.length; i++){
+                if(currentOrder == currentCargo[i]){
+                    currentCargo[i] = null;
+                }
+            }
         }
         
         // set current order to null to trigger re-routing on next cycle
@@ -133,25 +151,6 @@ public abstract class Truck implements Schedule, Render
             }
         }
         return true;
-    }
-    
-    /**
-     * Moves the truck towards the given destination.  If we wind up on it,
-     * then rejoice, and join the queue
-     */
-    public void move(){
-        Warehouse destination;
-        switch(currentOrder.getStatus()){
-            case AWAITING_PICKUP:
-                destination = currentOrder.pickup;
-                break;
-            case MOVING:
-                destination = currentOrder.destination;
-            default:
-                // throw an unchecked exception: stuff broke
-                throw new Error("Invalid order status");
-        }
-        Point newLocation = currentLocation.calculateNext(destination.location,getMoveSpeed());
     }
     
     /**

@@ -59,7 +59,7 @@ public class Warehouse implements Schedule, Render
      * and exit queues.
      */
     public String status(){
-        return "";
+        return enter.size() + " Trucks entering, " + exits.size() + " Trucks leaving";
     }
     
     public void draw(Graphics2D g){

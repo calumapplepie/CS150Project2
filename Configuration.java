@@ -60,7 +60,7 @@ public class Configuration
      * The length of one side of a square, which will be used to
      * depict Warehouses and Trucks.
      */
-    public static final double objectSize = 10;
+    public static final double objectSize = 5;
     
     /**
      * The color of an empty cargo unit in a truck

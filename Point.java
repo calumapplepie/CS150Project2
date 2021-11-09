@@ -52,6 +52,11 @@ public class Point
         double xDelta = (that.xPos - this.xPos)/totalDist * distToMove;
         double yDelta = (that.yPos - this.yPos)/totalDist * distToMove;
         
+        // if we'd go too far, just return the destination point.
+        if(totalDist < distToMove){
+            return that;
+        }
+        
         return new Point(xPos+xDelta,yPos+yDelta);
     }
     
