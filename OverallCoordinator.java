@@ -16,9 +16,15 @@ public class OverallCoordinator
      */
     public static void main(String[] args){
         DeQueue<RunCoordinator> states = new DeQueue<RunCoordinator>();
-        String[] confFiles = {"basic-config.txt","faster-config.txt"};
+        
+        // This sets up the window we will be using
         JFrame window = new JFrame();
-        for(String i : confFiles){
+        window.setSize(400, 250);
+        window.setTitle("Simulation");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
+        
+        for(String i : Configuration.confFiles){
             Configuration c = Configuration.readConfigFile(i);
             states.add(new RunCoordinator(c, window));
         }

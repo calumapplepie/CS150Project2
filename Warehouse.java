@@ -1,4 +1,7 @@
 import java.awt.Graphics2D;
+import java.awt.Graphics;
+
+import javax.swing.JComponent;
 
 /**
  * A single warehouse, which "contains" goods to be shipped.
@@ -6,7 +9,7 @@ import java.awt.Graphics2D;
  * @author Calum McConnell
  * @version 0.0.1
  */
-public class Warehouse implements Schedule, Render
+public class Warehouse extends JComponent implements Schedule, Render
 {
     public final Point location;
     public final int docks;
@@ -45,7 +48,7 @@ public class Warehouse implements Schedule, Render
         }
         // pull a number of trucks equal to docks out of the entrance queue,
         // placing them into the exiting queue
-        for(int i = 0; i < docks; i++){
+        for(int i = 0; i < docks && enter.size() > 0; i++){
             exits.add(enter.popFront());
         }
     }
@@ -59,6 +62,14 @@ public class Warehouse implements Schedule, Render
     }
     
     public void draw(Graphics2D g){
-        
+        double verticalCoordinate = location.yPos - Configuration.objectSize/2;
+        double horisontalCoordinate = location.xPos - Configuration.objectSize/2;
+
+
+    }
+    
+    @Override
+    public void paintComponent(Graphics g){
+        draw( (Graphics2D) g);
     }
 }

@@ -209,6 +209,7 @@ public class DoublyLinkedList<E>
      * calculated the distance between the current position and the pickup, then
      * the returned value would be each of the doubles that resulted from that
      * calculation
+     * NOTE THIS IN FINAL REPORT
      * @param function The function to apply to each of the List members
      * @return A list of the results, in the same order as this list
      */

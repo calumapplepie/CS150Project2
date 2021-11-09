@@ -44,6 +44,12 @@ public class Configuration
     public final int canvasWidth;
     public final int initialRandomSeed;
     
+    
+    /**
+     * The list of valid configuration files, which are to be loaded
+     */
+    public static final String[] confFiles = {"basic-config.txt","faster-config.txt"};
+    
     /**
      * The minimum amount of time that should be allowed to elapse between each
      * tick, measured in miliseconds
@@ -70,6 +76,8 @@ public class Configuration
      * The color of a warehouse
      */
     public static final Color warehouseColor = Color.BLACK;
+    
+
     
     protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, int router,

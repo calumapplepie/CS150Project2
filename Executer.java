@@ -1,4 +1,4 @@
-import java.util.function.Supplier;
+import java.util.function.Function;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -45,7 +45,35 @@ public class Executer
         // Increase the central clock by one hour
         ticks++;
         
-        // First,  iterate through the warehouse and truck lists, executing each one, then drawing it.
+        // Now iterate through the warehouse and truck lists, executing each one, and logging it's success
+        // Order doesn't matter; we have seperate lists for Trucks and Warehouses, but we don't need to.
+        warehouses.applyFunctionToList((Warehouse t)->{
+            t.action();
+            // TODO: logging;
+            return null;
+        });
+        
+        
+        // The results of this list say how many trucks are finished.
+        // I could (and might) modify this to be the number of orders each have done, and get
+        // a progress bar: but that's a job for later
+        DoublyLinkedList<Boolean> finishedTrucks = trucks.applyFunctionToList((Truck t) ->{
+            t.action();
+            // TODO: run logging method
+            return t.isComplete();
+        });
+        
+        // update the window
+        window.repaint();
+        
+        
+        // check if done: no way to do this but through good ol' iteration
+        for(int i = 0; i < finishedTrucks.size(); i++){
+            if(!finishedTrucks.fakePop()){
+                return true;
+            }
+        }
+        
         return false;
     }
     
@@ -118,10 +146,18 @@ public class Executer
     }
     
     /**
-     * This handles preparing for the graphics rendering
+     * This handles preparing for the graphics rendering.
+     * Rather than having a list of Render objects, I instead made the
+     * Graphics and Warehouse objects extend JComponent.  I think that is
+     * the most elegant way to make them all be displayable on-screen.
+     * While I'm not sure that's what you intended us to do, it is the way
+     * that is most readily adapted to the technique presented in the book.
+     * NOTE THIS IN FINAL REPORT
      */
     private void prepareGraphics(){
-            
+        // add all the trucks and warehouses to the JFrame
+        trucks.applyFunctionToList( (Truck t) -> window.add(t));
+        warehouses.applyFunctionToList( (Warehouse t) -> window.add(t));
     }
     
     /**
