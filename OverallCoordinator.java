@@ -1,3 +1,5 @@
+import javax.swing.JFrame;
+
 /**
  * This class is responsible for creating and executing the various runs
  * and states of the simulation.  It prepares each of the configuration
@@ -15,9 +17,10 @@ public class OverallCoordinator
     public static void main(String[] args){
         DeQueue<RunCoordinator> states = new DeQueue<RunCoordinator>();
         String[] confFiles = {"basic-config.txt","faster-config.txt"};
+        JFrame window = new JFrame();
         for(String i : confFiles){
             Configuration c = Configuration.readConfigFile(i);
-            states.add(new RunCoordinator(c));
+            states.add(new RunCoordinator(c, window));
         }
         
         states.applyFunctionToList( (RunCoordinator t) -> {t.start(); return null;});

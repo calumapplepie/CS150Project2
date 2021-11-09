@@ -1,4 +1,3 @@
-
 /**
  * This represents a point in space, and provides some
  * methods to work with that point.

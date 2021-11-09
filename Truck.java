@@ -1,4 +1,8 @@
+import java.awt.Graphics2D;
 import java.awt.Graphics;
+import java.awt.geom.Rectangle2D;
+import javax.swing.JComponent;
+
 import java.lang.reflect.Constructor;
 
 /**
@@ -9,7 +13,7 @@ import java.lang.reflect.Constructor;
  * @author Calum McConnell
  * @version 0.1
  */
-public abstract class Truck implements Schedule, Render
+public abstract class Truck extends JComponent implements Schedule, Render
 {
     private final ShipmentOrder[] currentCargo;
     private final DeQueue<ShipmentOrder> manifest;
@@ -37,7 +41,7 @@ public abstract class Truck implements Schedule, Render
      * which will be carried out by this truck
      */
     public Truck(
-        int cargoSize, 
+        int cargoSize,
         DeQueue<ShipmentOrder> cargoManifest,
         Class<? extends Router> routerClass,
         Point startingPoint){
@@ -156,7 +160,52 @@ public abstract class Truck implements Schedule, Render
      */
     public abstract double getMoveSpeed();
     
-    public void draw(Graphics g){
-        //todo
+    /**
+     * This creates a shape appropriate to the truck described by this object, and then
+     * paints it onto the given Graphics object.  The pictures of trucks are centered on
+     * their locations, and are sized and colored according to their contents.
+     * Filled cargo units are shown as orange squares, while empty ones are red.
+     * Thus, the overall truck is a rectangle, with the cargo displayed inside
+     */
+    public void draw(Graphics2D g){
+        // Don't draw a truck that is currently waiting in a warehouse
+        if(paused){
+            return;
+        }
+        // Lets calculate the various points from which we will draw our rectangles.
+        // We are centered on the currentLocation: so we draw from a bit above it
+        double verticalCoordinate = currentLocation.yPos - Configuration.objectSize/2;
+        
+        // The horisontal center is, once again, equal to the position less the length of the object
+        // But we need to account for the length varying, with different sized trucks
+        double length = Configuration.objectSize * currentCargo.length;
+        double horisontalCoordinate = currentLocation.xPos - length / 2;
+        
+        // Now, we produce the rectangles that make up the truck, 
+        // adding them to the graphics object
+        for(int i = 0; i < currentCargo.length; i++){
+            // build the rectangle.  We use a high-precision Rectangle2D.Double, mostly because I don't
+            // want to write casts from our double-based points into their integer-based coradinates
+            Rectangle2D rect = new Rectangle2D.Double(horisontalCoordinate,verticalCoordinate,
+                Configuration.objectSize,Configuration.objectSize);
+            // now set the color the next object will be, based on whether or not this unit is full
+            if(currentCargo[i] == null){
+                g.setColor(Configuration.emptyColor);
+            }
+            else{
+                g.setColor(Configuration.filledColor);
+            }
+            
+            // now draw!
+            g.fill(rect);
+            
+            // increment coordinate for next loop
+            horisontalCoordinate += Configuration.objectSize;
+        }
+    }
+    
+    @Override
+    public void paintComponent(Graphics g){
+        draw( (Graphics2D) g);
     }
 }

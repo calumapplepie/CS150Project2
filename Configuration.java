@@ -1,6 +1,9 @@
 import java.util.Scanner;
 import java.io.File;
 
+// For the static colors we define
+import java.awt.Color;
+
 
 /**
  * Manages the configuration: reading it in from the file, and then
@@ -17,6 +20,11 @@ import java.io.File;
  * That also makes this object immutable once created.  
  * The constructor is protected, to allow for testing while still 'advising'
  * against the manual creation of Configuration objects.
+ * <p>
+ * Some data fields are also static.  These fields are not read from the config file,
+ * but instead are hard-coded.  They describe, for instance, the various colors and
+ * sizes of graphics objects.  They are included here to centralize them, and to
+ * avoid 'magic constants' being sprinked throughout various classes and the code.
  * 
  * @author Calum McConnell
  * @version 0.0.1
@@ -35,6 +43,33 @@ public class Configuration
     public final int canvasHeight;
     public final int canvasWidth;
     public final int initialRandomSeed;
+    
+    /**
+     * The minimum amount of time that should be allowed to elapse between each
+     * tick, measured in miliseconds
+     */
+    public static final int stepGap = 500;
+    
+    /**
+     * The length of one side of a square, which will be used to
+     * depict Warehouses and Trucks.
+     */
+    public static final double objectSize = 10;
+    
+    /**
+     * The color of an empty cargo unit in a truck
+     */
+    public static final Color emptyColor = Color.RED;
+    
+    /**
+     * The color of a filled cargo unit in a truck
+     */
+    public static final Color filledColor = Color.ORANGE;
+    
+    /**
+     * The color of a warehouse
+     */
+    public static final Color warehouseColor = Color.BLACK;
     
     protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, int router,

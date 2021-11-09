@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 /**
  * A single warehouse, which "contains" goods to be shipped.
@@ -58,7 +58,7 @@ public class Warehouse implements Schedule, Render
         return "";
     }
     
-    public void draw(Graphics g){
+    public void draw(Graphics2D g){
         
     }
 }

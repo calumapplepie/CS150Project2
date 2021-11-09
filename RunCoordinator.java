@@ -1,3 +1,5 @@
+import javax.swing.JFrame;
+
 
 /**
  * Coordinates the runs of a given configuration state
@@ -9,9 +11,11 @@ public class RunCoordinator
 {
     private final DeQueue<Executer> runs = new DeQueue<Executer>();
     private final Configuration runConfig;
+    private final JFrame window;
     
-    public RunCoordinator(Configuration conf){
+    public RunCoordinator(Configuration conf, JFrame win){
         runConfig = conf;
+        window = win;
     }
     
     /**
@@ -20,7 +24,7 @@ public class RunCoordinator
      */
     public void start(){
         for(int i = 0; i < 10; i++){
-            Executer e = new Executer(runConfig, runConfig.initialRandomSeed+i);
+            Executer e = new Executer(runConfig, runConfig.initialRandomSeed+i,window);
             runs.add(e);
         }
         

@@ -1,5 +1,8 @@
 import java.util.function.Supplier;
 import java.util.Random;
+
+import javax.swing.JFrame;
+
 import java.lang.reflect.Constructor;
 
 /**
@@ -18,16 +21,17 @@ public class Executer
     private final DoublyLinkedList<Warehouse> warehouses = new DoublyLinkedList<Warehouse>();
     private final Configuration runConfig;
     private final Random randGen;
-    private final int timeDelta = 500;
+    private final JFrame window;
     private int ticks = 0;
     
     /**
      * Constructs an executor, which will conduct a run based on the given seed
      * and configuration
      */
-    public Executer(Configuration config, long seed){
+    public Executer(Configuration config, long seed, JFrame graphics){
         randGen = new Random(seed);
         runConfig = config;
+        window = graphics;
     }
     
     /**
@@ -38,7 +42,10 @@ public class Executer
      * @return false once it should be stopped
      */
     public boolean execute(){
-        //todo
+        // Increase the central clock by one hour
+        ticks++;
+        
+        // First,  iterate through the warehouse and truck lists, executing each one, then drawing it.
         return false;
     }
     
@@ -51,7 +58,8 @@ public class Executer
      * viewing pleasure
      */
     public void start(){
-        prepare();
+        prepareSimulation();
+        prepareGraphics();
         
         // We want to run untill execute() returns false.  But to make the graphics understandable,
         // we don't want tu run too often.  This starts one tick every timeDelta (class variable) miliseconds,
@@ -59,7 +67,7 @@ public class Executer
         // is insulated away.
         long timeStart = System.currentTimeMillis();
         while(execute()){
-            long timeToSleep = timeDelta -(System.currentTimeMillis() - timeStart);
+            long timeToSleep = Configuration.stepGap -(System.currentTimeMillis() - timeStart);
             timeStart = System.currentTimeMillis();
             // now sleep, but not for a negative duration
             try{
@@ -74,8 +82,9 @@ public class Executer
     
     /**
      * This does the groundwork: generating all the objects needed
+     * for the simulation to work
      */
-    private void prepare(){              
+    private void prepareSimulation(){              
         // this generates our manifests. we define this before we can
         // actually invoke it, 
                 
@@ -106,6 +115,13 @@ public class Executer
             Truck truck = new LargeTruck(generateManifest(), runConfig.routerClass,generatePoint());
             trucks.add(truck);
         }
+    }
+    
+    /**
+     * This handles preparing for the graphics rendering
+     */
+    private void prepareGraphics(){
+            
     }
     
     /**
