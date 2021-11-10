@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 /**
  * Write a description of class SimulationImage here.
  *
- * @author (your name)
- * @version (a version number or a date)
+ * @author Calum McConnell
+ * @version 0.0.1
  */
 public class SimulationImage extends JComponent
 {

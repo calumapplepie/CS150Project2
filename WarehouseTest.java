@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 /**
  * This conducts some basic tests on the Warehouse class
  *
- * @author  (your name)
- * @version (a version number or a date)
+ * @author  Calum McConnell
+ * @version 0.0.1
  */
 public class WarehouseTest
 {
