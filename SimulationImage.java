@@ -12,6 +12,11 @@ import java.awt.Graphics2D;
 public class SimulationImage extends JComponent
 {
     private final DoublyLinkedList<Render> objects = new DoublyLinkedList<Render>();
+    private final double scaleFactor;
+    
+    SimulationImage(double scale){
+        scaleFactor = scale;
+    }
     
     public void add(Render obj){
         objects.add(obj);
@@ -20,10 +25,18 @@ public class SimulationImage extends JComponent
     
     @Override
     public void paintComponent(Graphics g){
+        Graphics2D graph = (Graphics2D) g;
+        // re-scale
+        graph.scale(scaleFactor,scaleFactor);
+        
         objects.resetFakeQueue();
         for(int i = 0; i < objects.size(); i++){
-            objects.fakePop().draw( (Graphics2D) g);
+            objects.fakePop().draw(graph);
         }
+        
+        //de-scale
+        graph.scale(1/scaleFactor,1/scaleFactor);
+
     }
     
 }

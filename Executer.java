@@ -155,7 +155,7 @@ public class Executer
      * NOTE THIS IN FINAL REPORT
      */
     private void prepareGraphics(){
-        SimulationImage comp = new SimulationImage();
+        SimulationImage comp = new SimulationImage(600/runConfig.canvasWidth);
         // add all the trucks and warehouses to the JFrame
         trucks.applyFunctionToList( (Truck t) -> {comp.add(t); return null;});
         warehouses.applyFunctionToList( (Warehouse t) -> {comp.add(t); return null;});
