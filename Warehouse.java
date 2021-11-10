@@ -65,7 +65,7 @@ public class Warehouse implements Schedule, Render
     public void draw(Graphics2D g){
         double y = location.yPos - Configuration.objectSize/2;
         double x = location.xPos - Configuration.objectSize/2;
-        Rectangle2D rect = new Rectangle2D.Double(x,y,Configuration.objectSize,Configuration.objectSize);
+        Rectangle2D rect = new Rectangle2D.Double(x,y,Configuration.objectSize*2,Configuration.objectSize*2);
         g.setColor(Configuration.warehouseColor);
         g.fill(rect);
 

@@ -95,11 +95,11 @@ public class Executer
         // is insulated away.
         long timeStart = System.currentTimeMillis();
         while(execute()){
-            long timeToSleep = Configuration.stepGap -(System.currentTimeMillis() - timeStart);
-            timeStart = System.currentTimeMillis();
-            // now sleep, but not for a negative duration
+            long timeToSleep = Configuration.stepGapNanos -(System.nanoTime() - timeStart);
+            timeStart = System.nanoTime();
+            // now sleep, but not for a negative duration, or a too-long one
             try{
-                Thread.sleep(Math.max(timeToSleep, 0));
+                Thread.sleep(Math.max(timeToSleep, 0)/1000000, (int) Math.max(timeToSleep % 1000000, 0));
             }
             catch(Exception e){
                 System.err.println("We were interruped, apparently!?!?");
@@ -159,6 +159,9 @@ public class Executer
         // add all the trucks and warehouses to the JFrame
         trucks.applyFunctionToList( (Truck t) -> {comp.add(t); return null;});
         warehouses.applyFunctionToList( (Warehouse t) -> {comp.add(t); return null;});
+        // clear out the previous execution
+        window.getContentPane().removeAll();
+        
         window.add(comp);
         window.setVisible(true);
     }

@@ -20,8 +20,17 @@ public class BetterRouter extends Router
     public ShipmentOrder getNextOrder(Point currentLocation){
         var closestCandidates = new DeQueue<ShipmentOrder>();
         
+        // determine if we have a full cargo hold
+        boolean fullCargo = true;
+        for(ShipmentOrder i : currentCargo){
+            if(i == null){
+                fullCargo = false;
+                break;
+            }
+        }
+        
         // if the currentCargo is full, select from it
-        if(currentCargo[currentCargo.length-1]!= null){
+        if(fullCargo){
             for(ShipmentOrder i : currentCargo){
                 closestCandidates.add(i);
             }

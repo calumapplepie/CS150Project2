@@ -19,7 +19,7 @@ public class OverallCoordinator
         
         // This sets up the window we will be using
         JFrame window = new JFrame();
-        window.setSize(8000, 500);
+        window.setSize(8000, 5000);
         window.setTitle("Simulation");
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);

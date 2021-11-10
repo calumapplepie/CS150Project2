@@ -52,9 +52,11 @@ public class Configuration
     
     /**
      * The minimum amount of time that should be allowed to elapse between each
-     * tick, measured in miliseconds
+     * tick, measured in nanoseconds.  We use nanos instead of milis, because a 1
+     * milisecond pause is too long if we want to run through the sim really fast,
+     * but 0 milis is too sort for a reasonable experience
      */
-    public static final int stepGap = 500;
+    public static final int stepGapNanos = 500000;
     
     /**
      * The length of one side of a square, which will be used to

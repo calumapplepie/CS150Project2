@@ -79,6 +79,10 @@ public abstract class Truck implements Schedule, Render
      * loading queue and prepare to empty cargo.
      */
     public void action(){
+        if(paused == true){
+            return;
+        }
+        
         // go to router if no order
         if(currentOrder == null){
             currentOrder = router.getNextOrder(currentLocation);
@@ -104,7 +108,7 @@ public abstract class Truck implements Schedule, Render
      * for use by Warehouses
      */
     protected void loadingComplete(){
-        if(paused != false){
+        if(paused == false){
             throw new Error("A truck is trying to leave a warehouse it never entered");
         }
         paused = false;
@@ -126,6 +130,11 @@ public abstract class Truck implements Schedule, Render
                     currentCargo[i] = null;
                 }
             }
+        }
+        
+        // pause here (completing the execution) if we're done
+        if(isComplete()){
+            paused = true;
         }
         
         // set current order to null to trigger re-routing on next cycle
