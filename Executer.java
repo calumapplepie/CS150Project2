@@ -23,6 +23,10 @@ public class Executer
     private final Random randGen;
     private final JFrame window;
     private int ticks = 0;
+    /** total number of nanoseconds spent sleeping:**/
+    private long sleepTime = 0;
+    /** total number of nanoseconds spent executing **/
+    private long executionTime = 0;
     
     /**
      * Constructs an executor, which will conduct a run based on the given seed
@@ -95,8 +99,10 @@ public class Executer
         // is insulated away.
         long timeStart = System.currentTimeMillis();
         while(execute()){
-            long timeToSleep = Configuration.stepGapNanos -(System.nanoTime() - timeStart);
-            timeStart = System.nanoTime();
+            long lastTickTime = System.nanoTime() - timeStart;
+            long timeToSleep = runConfig.stepGapNanos - lastTickTime;
+            sleepTime += timeToSleep;
+            executionTime += lastTickTime;
             // now sleep, but not for a negative duration, or a too-long one
             try{
                 Thread.sleep(Math.max(timeToSleep, 0)/1000000, (int) Math.max(timeToSleep % 1000000, 0));
@@ -105,6 +111,8 @@ public class Executer
                 System.err.println("We were interruped, apparently!?!?");
                 throw new Error("Interrupted, despite a lack of multithreading", e);
             }
+            timeStart = System.nanoTime();
+            
         }
     }
     
@@ -155,7 +163,13 @@ public class Executer
      * NOTE THIS IN FINAL REPORT
      */
     private void prepareGraphics(){
-        SimulationImage comp = new SimulationImage(600/runConfig.canvasWidth);
+        // lets get our scale factors: this is based on my screen,
+        // a 1366x768 laptop monitor.  We want it to fit without going fullscreen:
+        // so there is a gap to the top and bottom.
+        double scaleFactorY = 650.0 / runConfig.canvasHeight;
+        double scaleFactorX = 1300.0 / runConfig.canvasWidth;
+        
+        SimulationImage comp = new SimulationImage(Math.min(scaleFactorX,scaleFactorY));
         // add all the trucks and warehouses to the JFrame
         trucks.applyFunctionToList( (Truck t) -> {comp.add(t); return null;});
         warehouses.applyFunctionToList( (Warehouse t) -> {comp.add(t); return null;});
@@ -172,8 +186,8 @@ public class Executer
      */
     private Point generatePoint(){
         return new Point(
-                randGen.nextDouble()*runConfig.canvasHeight,
-                randGen.nextDouble()*runConfig.canvasWidth);
+                randGen.nextDouble()*runConfig.canvasWidth,
+                randGen.nextDouble()*runConfig.canvasHeight);
     }
     
     /**

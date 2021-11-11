@@ -1,3 +1,4 @@
+import java.util.Formatter;
 /**
  * This represents a point in space, and provides some
  * methods to work with that point.
@@ -58,6 +59,19 @@ public class Point
         }
         
         return new Point(xPos+xDelta,yPos+yDelta);
+    }
+    
+    /**
+     * Produces a string representation of this point
+     */
+    public String toString(){
+        // we use the Formatter class to build our string.
+        // this is because we don't want 6 digits of precision: only 2
+        String formatStr = "(%.2f,%.2f)";
+        
+        Formatter formatter = new Formatter();
+        return formatter.format(formatStr, xPos,yPos).toString();
+        
     }
     
     /**

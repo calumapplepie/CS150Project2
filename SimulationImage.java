@@ -4,7 +4,8 @@ import java.awt.Graphics2D;
 
 
 /**
- * Write a description of class SimulationImage here.
+ * Represents the graphical representation of the simulation:
+ * this component paints the images of the sim.
  *
  * @author Calum McConnell
  * @version 0.0.1

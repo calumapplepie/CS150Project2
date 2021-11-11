@@ -5,6 +5,7 @@ import javax.swing.JComponent;
 
 import java.lang.reflect.Constructor;
 
+
 /**
  * This is a truck.  Most functionality is provided in this class,
  * but some specifics (such as move speed) are given by the child 
@@ -21,6 +22,8 @@ public abstract class Truck implements Schedule, Render
     private ShipmentOrder currentOrder;
     private Point currentLocation;
     private boolean paused = false;
+    private final StringBuilder statusString;
+    
     
     /**
      * Creates a truck.  Most parts of the truck are expected to be
@@ -51,6 +54,11 @@ public abstract class Truck implements Schedule, Render
             
             // make extra sure nobody can screw with our orders
             manifest.lock();
+            
+            // we use a StringBuilder to build our strings.  that's becuase the building
+            // and use of these strings is on the preformance critical path: it is 3
+            // orders of magnitude faster than standard string concat methods. 
+            statusString = new StringBuilder();
             
             // Now, lets create our router!
             try{
@@ -99,6 +107,10 @@ public abstract class Truck implements Schedule, Render
             paused = true;
             // join the warehouse's queue
             destination.joinQueue(this);
+            // note it in the log
+            statusString.append("Joined entry queue for the warehouse at ");
+            statusString.append(destination.location.toString());
+            statusString.append("\n");
         }
         
     }
@@ -122,6 +134,8 @@ public abstract class Truck implements Schedule, Render
                 i++;
             }
             currentCargo[i] = currentOrder;
+            // add this to the string log
+            statusString.append("Picked up ");
         }
         else{
             // we need to pull the order out of the array, it's completed
@@ -130,7 +144,11 @@ public abstract class Truck implements Schedule, Render
                     currentCargo[i] = null;
                 }
             }
+            statusString.append("Dropped off ");
         }
+        statusString.append("cargo at ");
+        statusString.append(currentLocation.toString());
+        
         
         // pause here (completing the execution) if we're done
         if(isComplete()){
@@ -145,9 +163,51 @@ public abstract class Truck implements Schedule, Render
      * Prepares a string describing the current location, destination, and
      * the cargo.  This string is added to another string that notes any
      * changes in the past cycle: eg, cargo added or removed.
+     * Caller is responsible for assuring that this is not called on a
+     * truck that has completed it's orders: the results are nonsensical in that case
      */
     public String status(){
-        // TODO
+        // For the sake of performance, I use a StringBuilder
+        // this is an API class that allows us to avoid repeatedly allocating parts of a string
+        // it is semantically equivalent with a simple string +=, but this avoids memory allocations
+        // it'd be nice if the compiler could spot that as well, buuuuutt it can't.
+               
+        // First, our location.
+        statusString.append("Location: ");
+        statusString.append(currentLocation.toString());
+        
+        // Now, our destination
+        statusString.append(" Destination: ");
+        if(currentOrder == null){
+            statusString.append("None");
+        }
+        else{
+            statusString.append(currentOrder.getTargetWarehouse().location.toString());
+        }
+        
+        // and our cargo, displayed as filled/total
+        statusString.append(" Cargo: ");
+        
+        int cargoCount = 0;
+        for(ShipmentOrder i : currentCargo){
+            if(i != null){
+                cargoCount++;
+            }
+        }
+        
+        statusString.append(cargoCount);
+        statusString.append("/");
+        statusString.append(currentCargo.length);
+        
+        // if we're paused, say so
+        if(paused){
+            statusString.append(" Paused, awaiting warehouse");
+        }
+        
+        // convert to a proper string
+        String status = statusString.toString();
+        // and clear out the old from our builder
+        statusString.setLength(0);
         return "";
     }
     

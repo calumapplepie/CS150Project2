@@ -35,6 +35,7 @@ public class WarehouseTest
         }
     }
     
+    @Test
     /**
      * This asserts that the set up created each of the warehouses, and that they are all
      * set up with an empty queue
@@ -57,7 +58,7 @@ public class WarehouseTest
      * This ensures that an example situation with a single truck works right,
      * with the truck correctly passing through various stages.
      */
-    public void assertTruckProcess(){
+    public void assertSingleTruckProcess(){
         // Build a little manifest
         final DeQueue<ShipmentOrder> manifest = new DeQueue<ShipmentOrder>();
         manifest.add(new ShipmentOrder(warehouses[0],warehouses[1]));
@@ -91,6 +92,9 @@ public class WarehouseTest
         // now, it should be being processed
         warehouses[0].action();
         assertEquals("0 Trucks entering, 1 Trucks leaving", warehouses[0].status());
+        // still paused though.
+        assertTrue(test.status().indexOf("Paused")!=-1);
+        test.action();
 
     }
 }

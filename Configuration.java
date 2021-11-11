@@ -40,15 +40,10 @@ public class Configuration
     public final int routerID;
     public final Class<? extends Router> routerClass;
     
-    public final int canvasHeight;
     public final int canvasWidth;
+
+    public final int canvasHeight;
     public final int initialRandomSeed;
-    
-    
-    /**
-     * The list of valid configuration files, which are to be loaded
-     */
-    public static final String[] confFiles = {"basic-config.txt","faster-config.txt"};
     
     /**
      * The minimum amount of time that should be allowed to elapse between each
@@ -56,7 +51,13 @@ public class Configuration
      * milisecond pause is too long if we want to run through the sim really fast,
      * but 0 milis is too sort for a reasonable experience
      */
-    public static final int stepGapNanos = 500000;
+    public final int stepGapNanos;
+    
+    /**
+     * The list of valid configuration files, which are to be loaded
+     */
+    public static final String[] confFiles = {/*"basic-config.txt","faster-config.txt",
+                                                "big-slow-config.txt",*/"big-fast-config.txt"};
     
     /**
      * The length of one side of a square, which will be used to
@@ -83,7 +84,7 @@ public class Configuration
     
     protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, int router,
-                            int height, int width){
+                            int width, int height, int delay){
         numSmallTrucks = small;
         numMediumTrucks= medium;
         numLargeTrucks = large;
@@ -93,15 +94,17 @@ public class Configuration
         routerID = router;
         routerClass = getRouterFromId(routerID);
         
-        canvasHeight = height;
         canvasWidth = width;
+        canvasHeight = height;
+        
+        stepGapNanos = delay;
         
         // initialRandomSeed is equal to the sum of all other fields
         // this makes it deterministic for a given conf-file, while causing
         // changes in that conf file to propigate to large changes in the simulation
         
         // the router choice is excluded, so that routers can be compared under identical conditions
-        
+        // the delay is also removed, so you can slow it down and watch the same sim again        
         initialRandomSeed = small + medium + large + warehouses + orders + height + width;
     }
     
@@ -122,8 +125,11 @@ public class Configuration
             int numOrdersPerTruck = scans.nextInt();
             int routerID = scans.nextInt();
             
-            int canvasHeight = scans.nextInt();
             int canvasWidth = scans.nextInt();
+            int canvasHeight = scans.nextInt();
+
+            
+            int delay = scans.nextInt();
             
             // the accusation that the above lines were produced by running
             //sed 's/public final //g;s/\;/ = scans.nextInt();/'
@@ -132,7 +138,7 @@ public class Configuration
             
             // get a class that represents the router we will be using
 
-            retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasHeight, canvasWidth);
+            retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasWidth, canvasHeight, delay);
             // only a monster would have used
             //sed 's/.*public final int//g;s/\;/, /'
             // to produce the above line
