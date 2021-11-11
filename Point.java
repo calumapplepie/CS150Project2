@@ -58,6 +58,11 @@ public class Point
             return that;
         }
         
+        // if it's asking us to stay still, don't return NaN's!
+        if(distToMove == 0.0){
+            return this;
+        }
+        
         return new Point(xPos+xDelta,yPos+yDelta);
     }
     

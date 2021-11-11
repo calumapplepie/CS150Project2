@@ -64,7 +64,7 @@ public class WarehouseTest
         manifest.add(new ShipmentOrder(warehouses[0],warehouses[1]));
         
         
-        // We create an local-scoped subclass of truck, that just helps monitor some things
+        // We create an local-scoped subclass of truck, that just helps us to monitor some things
         class TestingTruck extends Truck{
             TestingTruck(){
                 // variable capture: get the enclosing manifest variable
@@ -92,9 +92,48 @@ public class WarehouseTest
         // now, it should be being processed
         warehouses[0].action();
         assertEquals("0 Trucks entering, 1 Trucks leaving", warehouses[0].status());
-        // still paused though.
-        assertTrue(test.status().indexOf("Paused")!=-1);
+        // still paused though. discard the status containing the update, and make sure it doesnt change
+        test.status();
+        String status = test.status();
+        assertTrue(status.indexOf("Paused")!=-1);
         test.action();
+        // better not have done anything
+        assertEquals(status,test.status());
+        assertFalse(test.loaded);
+        // now, let it go!
+        warehouses[0].action();
+        // freedom?
+        status = test.status();
+        assertTrue(status.indexOf("Paused") == -1);
+        assertTrue(test.loaded);
+        assertFalse(test.isComplete());
+        // next.
+        test.loaded = false;
+        assertEmptyQueue(warehouses[0]);
+        assertEmptyQueue(warehouses[1]);
+        test.action();
+        assertEquals("1 Trucks entering, 0 Trucks leaving",warehouses[1].status());
+        // now, it should be being processed
+        warehouses[1].action();
+        assertEquals("0 Trucks entering, 1 Trucks leaving", warehouses[1].status());
+        // still paused though. discard again
+        test.status();
+        status = test.status();
+        assertTrue(status.indexOf("Paused")!=-1);
+        test.action();
+        // better not have done anything
+        assertEquals(status,test.status());
+        assertFalse(test.loaded);
+        // better not have done anything
+        assertEquals(status,test.status());
+        assertFalse(test.loaded);
+        // now, let it go!
+        warehouses[1].action();
+        // freedom?
+        status = test.status();
+        assertTrue(status.indexOf("Paused") != -1);
+        assertTrue(test.isComplete());
+        assertEmptyQueue(warehouses[1]);
 
     }
 }

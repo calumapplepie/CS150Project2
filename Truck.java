@@ -208,7 +208,7 @@ public abstract class Truck implements Schedule, Render
         String status = statusString.toString();
         // and clear out the old from our builder
         statusString.setLength(0);
-        return "";
+        return status;
     }
     
     public boolean isComplete(){
