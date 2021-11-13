@@ -26,6 +26,10 @@ public class ShipmentOrder
         pickup = start;
         destination = end;
         state= ShipmentState.AWAITING_PICKUP;
+        // we don't want to have this happen: callers should be certain it can't
+        if(start.location.equals(end.location)){
+            throw new Error("Can't move between two warehouses at the same spot!");
+        }
     }
     
     /**
