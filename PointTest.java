@@ -55,6 +55,11 @@ public class PointTest
      * While this started as silly, since it calls a helper method on sooo
      * many values, I eventually built it into a major test, by making the
      * helper method do ever-more complicated stuff.
+     * <p>
+     * As a result, this @Test is SLOW. Very slow.  Even after being fully JIT optimized
+     * (by running the test suite once), it's still several seconds.
+     * And yes, I put the annotation name in this comment to make sure you saw it before
+     * deciding to give up on my testing suite as having only 2 members.
      */
     public void testImmutableOptimization(){
         // Is testing 160,000 points too much? maybe.

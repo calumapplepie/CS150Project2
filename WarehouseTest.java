@@ -1,4 +1,4 @@
-
+import java.util.function.UnaryOperator;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * This conducts some basic tests on the Warehouse class
+ * This conducts some tests on the Warehouse class
  *
  * @author  Calum McConnell
  * @version 0.0.1
@@ -15,7 +15,6 @@ public class WarehouseTest
 {
     
     Warehouse[] warehouses;
-
     /**
      * Sets up the test fixture, initializing the warehouses.
      *
@@ -24,15 +23,36 @@ public class WarehouseTest
     @BeforeEach
     public void setUp()
     {
-        // set up the arr
-        warehouses = new Warehouse[10];
-        for(int i = 0; i < 10; i++){
+        // set up the array of warehouses
+        // we have two warehouses of each dock count: this lets us prepare all possible combinations
+        // of manifests for destinaton and origin dock count
+        warehouses = new Warehouse[6];
+        for(int i = 0; i < 6; i++){
+            // using Math.random() in a test suite is generally a bad idea: however,
+            // the location is hopefully irrelevant, as long as it isnt the same.
             double x = Math.random() * 1000;
             double y = Math.random() * 1000;
             Point p = new Point(x,y);
-            // i%3+1 ranges from 1-3, with i
+            // i%3+1 ranges from 1-3, wrt i
             warehouses[i] = new Warehouse(p, i%3+1);
         }
+        
+    }
+    
+    public void floodWarehouseQueue(Warehouse target1,Warehouse target2){
+        // each truck will be moving from target1 to target2, but they all need distinct manifests
+        // of distinct (though equivalent) shipping orders.
+        DeQueue<Truck> trucks = new DeQueue<Truck>();
+        for(int i = 0; i<30; i++){
+            var manifest = new DeQueue<ShipmentOrder>();
+            // add two orders, so that we can check that it doesnt end too soon
+            manifest.add(new ShipmentOrder(target1,target2));
+            manifest.add(new ShipmentOrder(target1,target2));
+            Truck newBoy = new TestingTruck(manifest);
+            trucks.add(newBoy);
+        }
+        // we use this technique again, rather than having a dozen for-each loops
+        UnaryOperator<Truck> func = (Truck t) -> {t.action(); return null;};
     }
     
     @Test
@@ -59,29 +79,11 @@ public class WarehouseTest
      * with the truck correctly passing through various stages.
      */
     public void assertSingleTruckProcess(){
-        // Build a little manifest
-        final DeQueue<ShipmentOrder> manifest = new DeQueue<ShipmentOrder>();
+        // Build a little, basic manifest
+        DeQueue<ShipmentOrder> manifest = new DeQueue<ShipmentOrder>();
         manifest.add(new ShipmentOrder(warehouses[0],warehouses[1]));
         
-        
-        // We create an local-scoped subclass of truck, that just helps us to monitor some things
-        class TestingTruck extends Truck{
-            TestingTruck(){
-                // variable capture: get the enclosing manifest variable
-                super(1,manifest,BadRouter.class,new Point(0,0));
-            }
-            
-            public boolean loaded = false;
-            public double getMoveSpeed(){
-                return 99999;
-            }
-            public void loadingComplete(){
-                loaded = true;
-                super.loadingComplete();
-            }
-        };
-        
-        TestingTruck test = new TestingTruck();
+        TestingTruck test = new TestingTruck(manifest);
         // make sure the test truck isn't already done
         assertFalse(test.isComplete());
         
@@ -136,4 +138,24 @@ public class WarehouseTest
         assertEmptyQueue(warehouses[1]);
 
     }
+    
+    /**
+     * This subclass just exists to let us monitor some things
+     * about the trucks we are testing with.  Since the truck doesn't matter
+     * in these tests, we use a super-fast truck to make testing easier.
+     */
+    private class TestingTruck extends Truck{
+        TestingTruck(DeQueue<ShipmentOrder> manifest){
+            super(1,manifest,BadRouter.class,new Point(0,0));
+        }
+        
+        public boolean loaded = false;
+        public double getMoveSpeed(){
+            return 99999;
+        }
+        public void loadingComplete(){
+            loaded = true;
+            super.loadingComplete();
+        }
+    };
 }
