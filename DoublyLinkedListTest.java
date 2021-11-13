@@ -209,6 +209,10 @@ public class DoublyLinkedListTest
      * Checks if remove() works right, on a bunch of different inputs.
      * This works with a 9-member array, so the backing array shouldn't
      * resize after use
+     * 
+     * Fun fact: @Test isn't the only way to create a jUnit test.
+     * Just wanted to make sure 'grep -f '@Test' *'  pointed you here,
+     * and didn't undercound my poor test files.
      */
     @ParameterizedTest
     @ValueSource(ints = {0,1,2,3,4,5,6,7,8})

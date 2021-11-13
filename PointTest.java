@@ -19,8 +19,30 @@ public class PointTest
     public void testToStringForFloats(){
         // these numbers are really, REALLY big: too big for an int
         Point reallyBig = new Point(-9999999999l,99999999999l);
-        Point ittyBitty = new Point(0.00000000009,0.0000000000009);
-        Point boring    = new Point(2.01,2.01);
+        Point ittyBitty = new Point(0.000000009,0.00000000009);
+        Point boring    = new Point(2.01 ,-2.01 );
+        Point lessBoring= new Point(2.011,-2.011);
+        
+        // the number is big, but hopefully not so big that it can't be represented in the
+        // mantissa without rounding.
+        assertEquals("(-9999999999.00, 99999999999.00)", reallyBig.toString());
+        
+        // a small point is rounded to 0 on display
+        assertEquals("(0.00, 0.00)", ittyBitty.toString());
+        // but is different in storage
+        assertNotEquals(new Point(0,0), ittyBitty);
+        
+        // do the same, with some normal-ish points.
+        assertEquals("(2.01, -2.01)",boring.toString());
+        assertEquals(boring.toString(),lessBoring.toString());
+        assertNotEquals(boring,lessBoring);
+        
+        // Now just check that all these weird cases get distances calculated correctly
+        testPointMovementCircle(reallyBig,1_000_000);
+        testPointMovementCircle(ittyBitty,0.000_000_1);
+        testPointMovementCircle(boring,0.000001);
+        testPointMovementCircle(lessBoring,10_000_000);
+        
     }
     
     @Test
@@ -35,6 +57,8 @@ public class PointTest
      * helper method do ever-more complicated stuff.
      */
     public void testImmutableOptimization(){
+        // Is testing 160,000 points too much? maybe.
+        // but hey, it's good to be really, REALLY sure.  and 5 seconds isnt THAT long
         for(int i = -200; i < 200; i++){
             for(int j = -200; j < 200; j++){
                 immutableIdentityTester(i,j);
@@ -110,12 +134,19 @@ public class PointTest
     }
     
     private void testPointDeltaMove(Point p, double xDelta, double yDelta){
-        // make sure it doesn't just give us the saturation (the 'don't go too far' logic)
-        Point direction = new Point(xDelta*2,yDelta*2);
-        Point expected  = new Point(xDelta  ,yDelta  );
+        double xExpect = p.xPos+xDelta;
+        double yExpect = p.yPos+yDelta;
+        // make sure it doesn't just give us the saturation (the 'don't go too far' logic)        
+        Point direction = new Point(xExpect+xDelta,yExpect+yDelta);
+        Point expected  = new Point(xExpect  ,yExpect );
         // yeah, we're doing a lot of rounding-inducing floating-point math.
-        // the Point class is being tested on it's tolerance of thouse rounds.
+        // the Point class is being tested on it's tolerance of those rounds.
         double distance = Math.sqrt(xDelta*xDelta + yDelta*yDelta);
-        Point calculated= p.calculateNext(p, distance);
+        Point calculated= p.calculateNext(direction, distance);
+        assertEquals(expected,calculated);
+        
+        // also check that the point isn't equal to the original: because that would mess things up
+        // (make the test completly irrelevant);
+        assertNotEquals(p,calculated);
     }
 }
