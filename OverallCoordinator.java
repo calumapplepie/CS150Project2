@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import java.io.File;
 
 /**
  * This class is responsible for creating and executing the various runs
@@ -25,7 +26,7 @@ public class OverallCoordinator
         window.setVisible(true);
         
         for(String i : Configuration.confFiles){
-            Configuration c = Configuration.readConfigFile(i);
+            Configuration c = Configuration.readConfigFile(new File(i));
             states.add(new RunCoordinator(c, window));
         }
         

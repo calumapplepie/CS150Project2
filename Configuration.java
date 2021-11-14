@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.io.File;
+import java.io.IOError;
 
 // For the static colors we define
 import java.awt.Color;
@@ -100,20 +101,20 @@ public class Configuration
         stepGapNanos = delay;
         
         // initialRandomSeed is equal to the sum of all other fields
-        // this makes it deterministic for a given conf-file, while causing
-        // changes in that conf file to propigate to large changes in the simulation
+        // this makes it deterministic for a given conf-file, while causing small
+        // changes in the conf file to propigate to large changes in the simulation
         
         // the router choice is excluded, so that routers can be compared under identical conditions
-        // the delay is also removed, so you can slow it down and watch the same sim again        
+        // the delay is also removed, so you can slow it down and watch the same sim again,        
         initialRandomSeed = small + medium + large + warehouses + orders + height + width;
     }
     
-    public static Configuration readConfigFile(String filename){
+    public static Configuration readConfigFile(File file){
         Configuration retval = null;
         
         // try-with-resources: the resource here is a scanner, constructed
-        // with an annonomys file.
-        try(Scanner scans = new Scanner(new File(filename))){
+        // with a random file.
+        try(Scanner scans = new Scanner(file)){
             // The file format is simply a space-seperated list of the fields
             // contained in the previous section.  This is not a sophisticated format:
             // fancy config files take time to write manually without API classes.
@@ -136,8 +137,6 @@ public class Configuration
             // over the instance variable declarations in this class
             // is completly and utterly baseless.
             
-            // get a class that represents the router we will be using
-
             retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasWidth, canvasHeight, delay);
             // only a monster would have used
             //sed 's/.*public final int//g;s/\;/, /'
@@ -150,8 +149,9 @@ public class Configuration
         // for this project
         catch(Exception e){
             System.err.println("Something went wrong reading the config");  
-            System.out.println("Critical error! something broke in config!");
             e.printStackTrace();
+            // don't let the machine try to continue with a broken config
+            throw new IOError(e);
         }
         
         return retval;
@@ -165,14 +165,16 @@ public class Configuration
      * This is overly complicated, but I wanted to be able to try out different
      * router designs, and this is one of the simpler ways that can be done
      */
-    private static Class<? extends Router> getRouterFromId(int id){
+    protected static Class<? extends Router> getRouterFromId(int id){
         switch(id){
             case 0:
                 return BadRouter.class;
             case 1:
                 return BetterRouter.class;
             default:
-                throw new Error("Invalid router ID");
+                // technically, this isn't a failing assertion: but who's checking?
+                // we want this to be a distinct error class
+                throw new AssertionError("Invalid router ID");
         }
     }
 }
