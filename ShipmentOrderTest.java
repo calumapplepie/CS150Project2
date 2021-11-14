@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
- * This does some tests on ShipmenetOrders
+ * This does some tests on ShipmentOrders
  *
  * @author  (your name)
  * @version (a version number or a date)
@@ -76,8 +76,12 @@ public class ShipmentOrderTest
                 // dang, now Superman showed up and tried to fight me
                 // but my supervillan origin story will not be ended so easily!
                 assertEquals(ShipmentState.DROPPED_OFF, t.getStatus());
+                // we throw exceptions in response to some operations with a finished order
                 assertThrows(IllegalStateException.class, ()->t.getTargetWarehouse() );
-                
+                assertThrows(IllegalStateException.class, ()->t.nextState());
+                // but they shouldn't change the state
+                assertEquals(ShipmentState.DROPPED_OFF, t.getStatus());
+
                 
                 return null;
             }

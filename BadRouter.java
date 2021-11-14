@@ -16,10 +16,16 @@ public class BadRouter extends Router
     }
     
     public ShipmentOrder getNextOrder(Point cur){
+        // even bothering to track this is very silly: in fact, it probably
+        // adds more time then it will register, if it even registers any.
+        // but, it's an important point for our examination.
+        long startTime = System.nanoTime();
         // point is ignored: simply returns the next order
         if(currentCargo[0] != null){
             return currentCargo[0];
         }
-        return manifest.popFront();
+        ShipmentOrder retval = manifest.popFront();
+        increaseExecutionTime(System.nanoTime() - startTime);
+        return retval;
     }
 }

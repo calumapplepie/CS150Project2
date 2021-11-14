@@ -18,6 +18,7 @@ public class BetterRouter extends Router
     }
     
     public ShipmentOrder getNextOrder(Point currentLocation){
+        long startTime = System.nanoTime();
         var closestCandidates = new DeQueue<ShipmentOrder>();
         
         // determine if we have a full cargo hold
@@ -38,8 +39,9 @@ public class BetterRouter extends Router
         else{
             closestCandidates = manifest;
         }
-        
-        return getClosestOrder(closestCandidates, currentLocation);
+        ShipmentOrder retval = getClosestOrder(closestCandidates, currentLocation);
+        increaseExecutionTime(System.nanoTime()-startTime);
+        return retval;
     }
     
     /**

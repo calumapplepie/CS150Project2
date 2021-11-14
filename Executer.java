@@ -100,12 +100,15 @@ public class Executer
         long timeStart = System.currentTimeMillis();
         while(execute()){
             long lastTickTime = System.nanoTime() - timeStart;
-            long timeToSleep = runConfig.stepGapNanos - lastTickTime;
+            // don't sleep for a negative duration
+            long timeToSleep = Math.max(0,runConfig.stepGapNanos - lastTickTime);
             sleepTime += timeToSleep;
             executionTime += lastTickTime;
-            // now sleep, but not for a negative duration, or a too-long one
+            
             try{
-                Thread.sleep(Math.max(timeToSleep, 0)/1000000, (int) Math.max(timeToSleep % 1000000, 0));
+                // this call takes parameters (long milis, int nanos)
+                // but nanos is capped at a certain value: so we need to do some silly math
+                Thread.sleep(timeToSleep/1000000, (int) timeToSleep % 1000000);
             }
             catch(Exception e){
                 System.err.println("We were interruped, apparently!?!?");

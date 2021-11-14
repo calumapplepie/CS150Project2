@@ -56,8 +56,8 @@ public class Configuration
     /**
      * The list of valid configuration files, which are to be loaded
      */
-    public static final String[] confFiles = {/*"basic-config.txt","faster-config.txt",
-                                                "big-slow-config.txt",*/"big-fast-config.txt"};
+    public static final String[] confFiles = {"basic-config.txt","faster-config.txt",
+                                                "big-slow-config.txt","big-fast-config.txt"};
     
     /**
      * The length of one side of a square, which will be used to

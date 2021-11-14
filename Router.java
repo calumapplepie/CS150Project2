@@ -10,6 +10,14 @@
 public abstract class Router
 {
     /**
+     * The number of nanoseconds spent executing getNextOrder().
+     * Obviously, we might also track the number of invocations of
+     * getNextOrder: however, that can just be calculated from the
+     * 
+     */
+    private long executionTime;
+    
+    /**
      * This class gets the next warehouse that is to be moved to.
      * It uses an arbitrary algorithm to determine this: perhaps it routes to
      * the next order, or perhaps it finds the closest one, or perhaps it
@@ -24,4 +32,21 @@ public abstract class Router
      */
     public abstract ShipmentOrder getNextOrder(Point currentLocation);
     
+    /**
+     * This method is used by subclasses to increase the amount of time
+     * the router has been executing.  It is to be called at the end of
+     * getNextOrder() invocation
+     * @param delta How many nanoseconds were required for the execution
+     */
+    protected void increaseExecutionTime(long delta){
+        executionTime += delta;
+    }
+    
+    /**
+     * Returns the amount of time that this router object has spent in
+     * getNextOrder() calls.
+     */
+    public long getExecutuionTime(){
+        return executionTime;
+    }
 }
