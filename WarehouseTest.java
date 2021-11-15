@@ -1,4 +1,4 @@
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
@@ -39,20 +39,56 @@ public class WarehouseTest
         
     }
     
+    @Test
+    /** 
+     * This calls floodWarehouseQueue for every combination of warehouses we can do.
+     */ 
+    public void testWarehouseQueue(){
+        // outer does first warehouse, inner does second
+        for(int i = 0; i < 3; i++){
+            for(int j = 3; j < 6; j++){
+                floodWarehouseQueue(warehouses[i],warehouses[j]);
+            }
+        }
+    }
+    
     public void floodWarehouseQueue(Warehouse target1,Warehouse target2){
         // each truck will be moving from target1 to target2, but they all need distinct manifests
         // of distinct (though equivalent) shipping orders.
-        DeQueue<Truck> trucks = new DeQueue<Truck>();
-        for(int i = 0; i<30; i++){
+        DeQueue<TestingTruck> trucks = new DeQueue<TestingTruck>();
+        for(int i = 0; i<32; i++){
             var manifest = new DeQueue<ShipmentOrder>();
             // add two orders, so that we can check that it doesnt end too soon
             manifest.add(new ShipmentOrder(target1,target2));
             manifest.add(new ShipmentOrder(target1,target2));
-            Truck newBoy = new TestingTruck(manifest);
-            trucks.add(newBoy);
+            
+            trucks.add( new TestingTruck(manifest));
         }
-        // we use this technique again, rather than having a dozen for-each loops
-        UnaryOperator<Truck> func = (Truck t) -> {t.action(); return null;};
+        // now, we check the departures: this also sets the target
+        confirmQueueDepartureSpeed(trucks, target1);
+    }
+    
+    private void confirmQueueDepartureSpeed(DeQueue<TestingTruck> trucks, Warehouse ware){
+        // send in the trucks!
+        trucks.applyFunctionToList( (TestingTruck t) -> {t.action(); return null;});
+        int numCompleted = 0;
+        while(numCompleted <= trucks.size()){
+            ware.action();
+            DoublyLinkedList<String> truckStatuses = trucks.applyFunctionToList( (TestingTruck t) -> t.status());
+
+            // check that the ones that should be completed, are
+            for(int i = 0; i<Math.min(numCompleted, trucks.size()); i++){
+                assertTrue(trucks.fakePop().loaded);
+                assertEquals(-1, truckStatuses.fakePop().indexOf("awaiting warehouse"));
+            }
+            // and those that shouldn't be, aren't
+            for(int i = numCompleted; i < trucks.size(); i++){
+                assertNotEquals(-1, truckStatuses.fakePop().indexOf("awaiting warehouse"));
+            }
+            numCompleted += ware.docks;
+            assertEquals(Math.max(trucks.size() - numCompleted,0) + " Trucks entering, " + Math.min(ware.docks,trucks.size()-numCompleted+ware.docks) + " Trucks leaving", ware.status());
+            trucks.resetFakeQueue();
+        }
     }
     
     @Test

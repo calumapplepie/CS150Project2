@@ -9,7 +9,9 @@ import java.util.Random;
  * Subclasses of truck should have test classes that extend
  * this one, which contain at least one @Test.
  * 
- * Trucks in this class are not given usable manifests
+ * Trucks in this class are given fairly bad manifests, and the tests
+ * aren't terribly thorough.  Tests in the Warehouse class cover a
+ * lot of the behavior of this class, and are relied upon to do that
  * 
  * Lastly, while this class uses random numbers to generate points,
  * the numbers are deterministically generated, keeping the test stable
@@ -67,8 +69,6 @@ public abstract class TruckTest
         
     }
     
-    
-    
     @Test
     public void trucksMoveCorrectDistance(){
         for(Truck t : trucks){
@@ -79,6 +79,12 @@ public abstract class TruckTest
             // WHICH FOR SOME REASON ISN'T A PART OF JAVA STANDARD LIBRARYS
             assertTrue(Point.floatingEquals(start.calculateDistance(end), t.getMoveSpeed()));
         }
-        
+    }
+    
+    @Test
+    public void testLoadingCompleteErrors(){
+        for(Truck t : trucks){
+            assertThrows(Error.class,()->{t.loadingComplete();});
+        }
     }
 }

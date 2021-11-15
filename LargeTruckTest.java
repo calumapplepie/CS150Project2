@@ -28,4 +28,6 @@ public class LargeTruckTest extends TruckTest
     public void thisIsARealTestClass(){
         assertEquals(0,0);
     }
+    
+    
 }
