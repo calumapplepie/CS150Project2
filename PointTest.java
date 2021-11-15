@@ -21,9 +21,11 @@ public class PointTest
         Point ittyBitty = new Point(0.000000009,0.00000000009);
         Point boring    = new Point(2.01 ,-2.01 );
         Point lessBoring= new Point(2.011,-2.011);
+        Point oneMore   = new Point(-2.389,-4.294999);
+        Point roundMe   = new Point(-2.999,2.999);
         
-        // the number is big, but hopefully not so big that it can't be represented in the
-        // mantissa without rounding.
+        // the number is bigger than an int can take, but hopefully not so big that it can't be represented in the
+        // mantissa without weird rounding.
         assertEquals("(-9999999999.00, 99999999999.00)", reallyBig.toString());
         
         // a small point is rounded to 0 on display
@@ -35,6 +37,12 @@ public class PointTest
         assertEquals("(2.01, -2.01)",boring.toString());
         assertEquals(boring.toString(),lessBoring.toString());
         assertNotEquals(boring,lessBoring);
+        
+        // rounding is hard
+        assertEquals("(-3.00, 3.00)",roundMe.toString());
+        // and just one more
+        assertEquals("(2.39, -4.30)",oneMore.toString());
+        
         
         // Now just check that all these weird cases get distances calculated correctly
         testPointMovementCircle(reallyBig,1_000_000);

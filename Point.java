@@ -1,4 +1,6 @@
 import java.util.Formatter;
+import java.text.DecimalFormat;
+
 /**
  * This represents a point in space, and provides some
  * methods to work with that point.
@@ -16,6 +18,9 @@ public class Point
     // allowing direct access to them is not a problem.
     public final double xPos;
     public final double yPos;
+    // we use this to format our numbers, since it's much faster than Formatter
+    // we allow for a lot of leading digits: some of our test cases are nasty
+    public static final DecimalFormat formatter = new DecimalFormat("##################0.00");
 
     /**
      * Constructor for objects of class Point
@@ -67,16 +72,40 @@ public class Point
     }
     
     /**
-     * Produces a string representation of this point
+     * Produces a string representation of this point.
+     * <p>
+     * I recently took a break, deciding to play with preformance profiling.  It turns
+     * out this one method consumes 6% of our overall CPU time, and that's without even
+     * fully implementing all of its uses! The Formatter class is INCREADIBLY inefficent
+     * in java.  So, I do some tomfoolery to get this very simple format to be assembled.
      */
     public String toString(){
-        // we use the Formatter class to build our string.
-        // this is because we don't want 6 digits of precision: only 2
-        String formatStr = "(%.2f, %.2f)";
+        return "(" + doubleToString(xPos) +", "+ doubleToString(yPos) + ")";        
+    }
+    
+    /**
+     * This method exists to make it possible for the JIT to fully optimize the routines
+     * that transform our points into strings.  Without this, we're stuck doing things
+     * with formatters, which are surprisingly slow!
+     * 
+     * Is this uneeded and complex? Yes. But it solves a problem that I would otherwise suffer!
+     */
+    public String doubleToString(double d){
+        long intPortion = (long) d;
+        // get just the decimal
+        d -= intPortion;
+        // make sure it's positive, so we don't get random negatives floating around
+        d = Math.abs(d);
+        int decimalDigit1 = (int) Math.round((d *= 10));
+        int decimalDigit2 = (int) Math.round((d*=10));
+        // check if we should have increased the int portion
+        if(decimalDigit1 ==9 && d >= 9.5){
+            decimalDigit1 = 0;
+            decimalDigit2 = 0;
+            intPortion += Math.copySign(1,intPortion);
+        }
         
-        Formatter formatter = new Formatter();
-        return formatter.format(formatStr, xPos,yPos).toString();
-        
+        return intPortion + "." + decimalDigit1 + decimalDigit2;
     }
     
     /**
