@@ -229,6 +229,13 @@ public abstract class Truck implements Schedule, Render
     public abstract double getMoveSpeed();
     
     /**
+     * Gets the trucks current location.  FOR SCIENCE.
+     */
+    public Point getLocation(){
+        return currentLocation;
+    }
+    
+    /**
      * This creates a shape appropriate to the truck described by this object, and then
      * paints it onto the given Graphics object.  The pictures of trucks are centered on
      * their locations, and are sized and colored according to their contents.

@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 /**
  * This tests the loading of a config file, verifying that fields wind up where they should.
  *
- * @author  (your name)
- * @version (a version number or a date)
+ * @author  Calum McConnell
+ * @version 0.0.1
  */
 public class ConfigurationTest
 {

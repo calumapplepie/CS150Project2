@@ -4,14 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.RepeatedTest;
 
 /**
  * This tests Point's for various properties and behaviors, using primarally handmade
  * testcases
  *
- * @author  (your name)
- * @version (a version number or a date)
+ * @author  Calum McConnell
+ * @version 0.0.1
  */
 public class PointTest
 {
