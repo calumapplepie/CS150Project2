@@ -65,13 +65,20 @@ public abstract class TruckTest
         trucks[10] = generateTruckAtPoint(new Point(0,0));
         trucks[11] = generateTruckAtPoint(new Point(-10,-10));
         
-        
     }
     
     
     
     @Test
-    public void trucksAreInitialized(){
+    public void trucksMoveCorrectDistance(){
+        for(Truck t : trucks){
+            Point start = t.getLocation();
+            t.action();
+            Point end = t.getLocation();
+            // we need our floating equals for this
+            // WHICH FOR SOME REASON ISN'T A PART OF JAVA STANDARD LIBRARYS
+            assertTrue(Point.floatingEquals(start.calculateDistance(end), t.getMoveSpeed()));
+        }
         
     }
 }

@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 public class LargeTruckTest extends TruckTest
 {
     public LargeTruck generateTruckAtPoint(Point p){
-        LargeTruck t = new LargeTruck(generateManifest(3),BadRouter.class,generatePoint());
+        LargeTruck t = new LargeTruck(generateManifest(3),BadRouter.class,p);
         assertEquals(p,t.getLocation());
         return t;    
     }
