@@ -47,6 +47,11 @@ public class Configuration
     public final int initialRandomSeed;
     
     /**
+     * The name of this configuration file
+     */
+    public final String name;
+    
+    /**
      * The minimum amount of time that should be allowed to elapse between each
      * tick, measured in nanoseconds.  We use nanos instead of milis, because a 1
      * milisecond pause is too long if we want to run through the sim really fast,
@@ -85,7 +90,7 @@ public class Configuration
     
     protected Configuration(int small, int medium, int large, int warehouses,
                             int orders, int router,
-                            int width, int height, int delay){
+                            int width, int height, int delay, String name){
         numSmallTrucks = small;
         numMediumTrucks= medium;
         numLargeTrucks = large;
@@ -107,9 +112,11 @@ public class Configuration
         // the router choice is excluded, so that routers can be compared under identical conditions
         // the delay is also removed, so you can slow it down and watch the same sim again,        
         initialRandomSeed = small + medium + large + warehouses + orders + height + width;
+        this.name = name;
     }
     
     public static Configuration readConfigFile(File file){
+        
         Configuration retval = null;
         
         // try-with-resources: the resource here is a scanner, constructed
@@ -137,7 +144,7 @@ public class Configuration
             // over the instance variable declarations in this class
             // is completly and utterly baseless.
             
-            retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasWidth, canvasHeight, delay);
+            retval = new Configuration(numSmallTrucks, numMediumTrucks, numLargeTrucks, numWarehouses, numOrdersPerTruck, routerID, canvasWidth, canvasHeight, delay, file.getName());
             // only a monster would have used
             //sed 's/.*public final int//g;s/\;/, /'
             // to produce the above line

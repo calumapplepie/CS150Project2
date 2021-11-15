@@ -288,4 +288,12 @@ public abstract class Truck implements Schedule, Render
             horisontalCoordinate += Configuration.objectSize;
         }
     }
+    
+    /**
+     * Returns the ammount of time the router spent executing code,
+     * in nanoseconds
+     */
+    public long routingTime(){
+        return router.getExecutionTime();
+    }
 }

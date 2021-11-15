@@ -1,6 +1,8 @@
 import java.util.function.Function;
 import java.util.Random;
 
+import java.io.File;
+
 import javax.swing.JFrame;
 
 import java.lang.reflect.Constructor;
@@ -30,9 +32,9 @@ public class Executer
     
     /**
      * Constructs an executor, which will conduct a run based on the given seed
-     * and configuration
+     * and configuration.  Each logFile should be unique
      */
-    public Executer(Configuration config, long seed, JFrame graphics){
+    public Executer(Configuration config, long seed, JFrame graphics, String logFile){
         randGen = new Random(seed);
         runConfig = config;
         window = graphics;
@@ -96,7 +98,7 @@ public class Executer
         // we don't want tu run too often.  This starts one tick every timeDelta (class variable) miliseconds,
         // counting from when the last tick started.  Thus, most noise in the execution time of execute()
         // is insulated away.
-        long timeStart = System.currentTimeMillis();
+        long timeStart = System.nanoTime();
         while(execute()){
             long lastTickTime = System.nanoTime() - timeStart;
             // don't sleep for a negative duration
@@ -114,8 +116,8 @@ public class Executer
                 throw new Error("Interrupted, despite a lack of multithreading", e);
             }
             timeStart = System.nanoTime();
-            
         }
+        System.out.println(executionTime + " execting, slept: "+ sleepTime);
     }
     
     /**

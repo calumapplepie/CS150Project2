@@ -24,7 +24,7 @@ public class RunCoordinator
      */
     public void start(){
         for(int i = 0; i < 10; i++){
-            Executer e = new Executer(runConfig, runConfig.initialRandomSeed+i,window);
+            Executer e = new Executer(runConfig, runConfig.initialRandomSeed+i,window,runConfig.name + i);
             runs.add(e);
         }
         

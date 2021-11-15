@@ -47,7 +47,7 @@ public abstract class Router
      * Returns the amount of time that this router object has spent in
      * getNextOrder() calls.
      */
-    public long getExecutuionTime(){
+    public long getExecutionTime(){
         return executionTime;
     }
 }
