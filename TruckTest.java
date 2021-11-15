@@ -14,8 +14,8 @@ import java.util.Random;
  * Lastly, while this class uses random numbers to generate points,
  * the numbers are deterministically generated, keeping the test stable
  *
- * @author (your name here)
- * @version (version number or date here)
+ * @author Calum McConnell
+ * @version 0.0.1
  */
 public abstract class TruckTest
 {
@@ -47,10 +47,6 @@ public abstract class TruckTest
         }while (start == end);
         return new ShipmentOrder(start,end);
     }
-    
-    public Truck generateRandomTruck(){
-        return generateTruckAtPoint(generatePoint());
-    }
     // for testing specific 'weird cases'
     public abstract Truck generateTruckAtPoint(Point p);
     
@@ -64,7 +60,7 @@ public abstract class TruckTest
         
         trucks = new Truck[12];
         for(int i = 0; i < 10; i++){
-            trucks[i]=generateRandomTruck();
+            trucks[i]=generateTruckAtPoint(generatePoint());
         }
         trucks[10] = generateTruckAtPoint(new Point(0,0));
         trucks[11] = generateTruckAtPoint(new Point(-10,-10));

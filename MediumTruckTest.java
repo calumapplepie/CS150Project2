@@ -9,13 +9,15 @@ import org.junit.jupiter.api.Test;
  * The test class MediumTruckTest. Extends TruckTest, which does most of the actual
  * work
  *
- * @author  (your name)
- * @version (a version number or a date)
+ * @author  Calum McConnell
+ * @version 0.0.1
  */
 public class MediumTruckTest extends TruckTest
 {
-    public SmallTruck generateTruckAtPoint(Point p){
-        return new SmallTruck(generateManifest(3),BadRouter.class,generatePoint());
+    public MediumTruck generateTruckAtPoint(Point p){
+        MediumTruck t = new MediumTruck(generateManifest(3),BadRouter.class,generatePoint());
+        assertEquals(p,t.getLocation());
+        return t;    
     }
     
     @Test
