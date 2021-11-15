@@ -51,10 +51,9 @@ public class Executer
         
         // Now iterate through the warehouse and truck lists, executing each one, and logging it's success
         // Order doesn't matter; we have seperate lists for Trucks and Warehouses, but we don't need to.
-        warehouses.applyFunctionToList((Warehouse t)->{
+        DoublyLinkedList<String> warehouseStatuses = warehouses.applyFunctionToList((Warehouse t)->{
             t.action();
-            // TODO: logging;
-            return null;
+            return t.status();
         });
         
         

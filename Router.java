@@ -29,6 +29,7 @@ public abstract class Router
      * check the status stored within it to be sure.
      * 
      * @return The next order to fulfill: it may be one that is already in-
+     * progress, or it may be a new one.  Returns null when no orders remain.
      */
     public abstract ShipmentOrder getNextOrder(Point currentLocation);
     

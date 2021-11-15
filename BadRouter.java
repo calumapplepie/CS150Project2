@@ -21,10 +21,17 @@ public class BadRouter extends Router
         // but, it's an important point for our examination.
         long startTime = System.nanoTime();
         // point is ignored: simply returns the next order
+        ShipmentOrder retval;
         if(currentCargo[0] != null){
-            return currentCargo[0];
+            retval = currentCargo[0];
         }
-        ShipmentOrder retval = manifest.popFront();
+        // we should return null when we're done
+        else if(manifest.size() == 0){
+            retval = null;
+        }
+        else{
+            retval = manifest.popFront();
+        }
         increaseExecutionTime(System.nanoTime() - startTime);
         return retval;
     }

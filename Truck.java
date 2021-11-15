@@ -22,6 +22,8 @@ public abstract class Truck implements Schedule, Render
     private ShipmentOrder currentOrder;
     private Point currentLocation;
     private boolean paused = false;
+    // defer whole-manifest traversals when possible
+    private boolean complete = false;
     private final StringBuilder statusString;
     
     
@@ -95,6 +97,13 @@ public abstract class Truck implements Schedule, Render
         if(currentOrder == null){
             currentOrder = router.getNextOrder(currentLocation);
         }
+        // if it's still null, then routing has decided we're done
+        if(currentOrder == null){
+            paused = true;
+            complete = true;
+            return;
+        }
+        
         // What is our destiny?
         Warehouse destination = currentOrder.getTargetWarehouse();
         
@@ -150,10 +159,7 @@ public abstract class Truck implements Schedule, Render
         statusString.append(currentLocation.toString());
         
         
-        // pause here (completing the execution) if we're done
-        if(isComplete()){
-            paused = true;
-        }
+        // whether or not we are done will be evaluated by the router, when it's time
         
         // set current order to null to trigger re-routing on next cycle
         currentOrder = null;
@@ -201,7 +207,15 @@ public abstract class Truck implements Schedule, Render
         
         // if we're paused, say so
         if(paused){
-            statusString.append(" Paused, awaiting warehouse");
+            statusString.append(" Paused, ");
+            // we might be done!
+            if(complete){
+                statusString.append("all orders complete!");
+            }
+            else{
+                statusString.append("awaiting warehouse");
+            }
+            
         }
         
         // convert to a proper string
@@ -211,15 +225,11 @@ public abstract class Truck implements Schedule, Render
         return status;
     }
     
+    /**
+     * Whether or not we are finished.
+     */
     public boolean isComplete(){
-        // restart the fake queue
-        manifest.resetFakeQueue();
-        for(int i = 0; i < manifest.size(); i++){
-            if(manifest.fakePop().getStatus() != ShipmentState.DROPPED_OFF){
-                return false;
-            }
-        }
-        return true;
+        return complete;
     }
     
     /**

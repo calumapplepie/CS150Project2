@@ -83,6 +83,7 @@ public abstract class TruckTest
     
     @Test
     public void testLoadingCompleteErrors(){
+        // we should get an error, since none of these have been loaded.
         for(Truck t : trucks){
             assertThrows(Error.class,()->{t.loadingComplete();});
         }

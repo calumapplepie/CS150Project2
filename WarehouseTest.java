@@ -169,7 +169,10 @@ public class WarehouseTest
         warehouses[1].action();
         // freedom?
         status = test.status();
-        assertTrue(status.indexOf("Paused") != -1);
+        assertTrue(status.indexOf("Paused") == -1);
+        // the truck won't have noticed it's done yet: that's done by the router
+        test.action();
+        assertTrue(test.status().indexOf("Paused") != -1);
         assertTrue(test.isComplete());
         assertEmptyQueue(warehouses[1]);
 
