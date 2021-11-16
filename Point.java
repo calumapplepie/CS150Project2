@@ -21,6 +21,9 @@ public class Point
     // we use this to format our numbers, since it's much faster than Formatter
     // we allow for a lot of leading digits: some of our test cases are nasty
     public static final DecimalFormat formatter = new DecimalFormat("##################0.00");
+    
+    // okay, so not EVERYTHING is immutable: but this cache should speed things up a lot for some of our 'big spenders'
+    private String cached = null;
 
     /**
      * Constructor for objects of class Point
@@ -80,7 +83,10 @@ public class Point
      * in java.  So, I do some tomfoolery to get this very simple format to be assembled.
      */
     public String toString(){
-        return "(" + doubleToString(xPos) +", "+ doubleToString(yPos) + ")";        
+        if(cached== null){
+            cached = "(" + doubleToString(xPos) +", "+ doubleToString(yPos) + ")";
+        }
+        return cached;        
     }
     
     /**
@@ -96,12 +102,16 @@ public class Point
         d -= intPortion;
         // make sure it's positive, so we don't get random negatives floating around
         d = Math.abs(d);
-        int decimalDigit1 = (int) Math.round((d *= 10));
+        int decimalDigit1 = (int) (d *= 10);
+        d-= decimalDigit1;
         int decimalDigit2 = (int) Math.round((d*=10));
         // check if we should have increased the int portion
-        if(decimalDigit1 ==9 && d >= 9.5){
-            decimalDigit1 = 0;
+        if(decimalDigit2 == 10){
             decimalDigit2 = 0;
+            decimalDigit1++;
+        }
+        if(decimalDigit1 == 10){
+            decimalDigit1 = 0;
             intPortion += Math.copySign(1,intPortion);
         }
         

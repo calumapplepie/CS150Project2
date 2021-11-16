@@ -21,7 +21,7 @@ public class PointTest
         Point ittyBitty = new Point(0.000000009,0.00000000009);
         Point boring    = new Point(2.01 ,-2.01 );
         Point lessBoring= new Point(2.011,-2.011);
-        Point oneMore   = new Point(-2.389,-4.294999);
+        Point oneMore   = new Point(2.399,-4.294999);
         Point roundMe   = new Point(-2.999,2.999);
         
         // the number is bigger than an int can take, but hopefully not so big that it can't be represented in the
@@ -41,7 +41,7 @@ public class PointTest
         // rounding is hard
         assertEquals("(-3.00, 3.00)",roundMe.toString());
         // and just one more
-        assertEquals("(2.39, -4.30)",oneMore.toString());
+        assertEquals("(2.40, -4.29)",oneMore.toString());
         
         
         // Now just check that all these weird cases get distances calculated correctly
