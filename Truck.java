@@ -160,7 +160,7 @@ public abstract class Truck implements Schedule, Render
         statusString.append(";  ");
         
         // whether or not we are now done will be evaluated by the router,
-        // after it's next action() call
+        // after it's next action() call    
         
         // set current order to null to trigger re-routing on next cycle
         currentOrder = null;
@@ -223,8 +223,6 @@ public abstract class Truck implements Schedule, Render
             }
             
         }
-        // trailing newline
-        statusString.append("\n");
         
         // convert to a proper string
         String status = statusString.toString();

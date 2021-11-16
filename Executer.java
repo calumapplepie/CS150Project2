@@ -2,6 +2,7 @@ import java.util.function.Function;
 import java.util.Random;
 
 import java.io.FileWriter;
+import java.io.File;
 
 import javax.swing.JFrame;
 
@@ -29,7 +30,8 @@ public class Executer
     private long sleepTime = 0;
     /** total number of nanoseconds spent executing **/
     private long executionTime = 0;
-    private final long initialStartTime = 0;
+    private final long initialStartTime;
+    private final StringBuilder status = new StringBuilder();
     
     private final FileWriter logFileWriter;
     
@@ -37,13 +39,15 @@ public class Executer
      * Constructs an executor, which will conduct a run based on the given seed
      * and configuration.  Each logFile should be unique
      */
-    public Executer(Configuration config, long seed, JFrame graphics, String logFile){
+    public Executer(Configuration config, long seed, JFrame graphics, String logFileName){
         initialStartTime = System.nanoTime();
         randGen = new Random(seed);
         runConfig = config;
         window = graphics;
         try{
-            logFileWriter = new FileWriter(logFile);
+            File logFileFile = new File(logFileName);
+            logFileFile.delete();
+            logFileWriter = new FileWriter(logFileFile);
         }
         catch(Exception e){
             // throw an exception casued by another exception
@@ -91,19 +95,20 @@ public class Executer
                 status.append(i);
                 status.append(": ");
                 status.append(warehouseStatuses.fakePop());
-                // todo: profile again, check the cost of this
-                // probably won't have time to do that before I turn it in. oh well.
-                logFileWriter.write(status.toString());
-                status.setLength(0);
+                // trailing newline
+                status.append("\n");
             }
             for(int i = 0; i < truckStatuses.size(); i++){
                 status.append("Truck ");
                 status.append(i);
                 status.append(": ");
                 status.append(truckStatuses.fakePop());
-                logFileWriter.write(status.toString());
-                status.setLength(0);
+                status.append("\n");
             }
+            // we only do one write, because this method is slowwww:
+            // it ate up half my execution time when I tried a run with it in the inner loops
+            logFileWriter.write(status.toString());
+            status.setLength(0);
         }
         catch(Exception e){
             throw new Error("Failed to write logs",e);
@@ -131,7 +136,7 @@ public class Executer
      */
     public void start(){
         prepareSimulation();
-        prepareGraphics();
+        prepareGraphics(); 
         
         // We want to run untill execute() returns false.  But to make the graphics understandable,
         // we don't want tu run too often.  This starts one tick every timeDelta (class variable) miliseconds,
@@ -156,14 +161,16 @@ public class Executer
             }
             timeStart = System.nanoTime();
         }
-        System.out.println(executionTime + " execting, slept: "+ sleepTime);
+        printDiagnostic();
     }
     
     public void printDiagnostic(){
-        ("Run Complete!  execution: ");
+        // print out some basic stats
+        System.out.print("Run Complete!  execution: ");
         System.out.print(executionTime + ", plannedSleep: "+ sleepTime);
-        ("overall time: ", initialStartTime - System.nanoTime());
-        ("ticks evaluated: ", ticks);
+        System.out.print("overall time: "+ (initialStartTime - System.nanoTime()));
+        System.out.print("ticks evaluated: "+ ticks);
+        
         
         long routerTime = 0;
         trucks.resetFakeQueue();
@@ -172,8 +179,10 @@ public class Executer
             routerTime += trucks.fakePop().routingTime();
         }
         
-        ("time spent routing: ", routerTime);
+        System.out.print("time spent routing: "+ routerTime);
         
+        // end the diagnostic
+        System.out.println();
     }
 
     /**
