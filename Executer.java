@@ -1,7 +1,7 @@
 import java.util.function.Function;
 import java.util.Random;
 
-import java.io.File;
+import java.io.FileWriter;
 
 import javax.swing.JFrame;
 
@@ -30,6 +30,8 @@ public class Executer
     /** total number of nanoseconds spent executing **/
     private long executionTime = 0;
     
+    private final FileWriter logFileWriter;
+    
     /**
      * Constructs an executor, which will conduct a run based on the given seed
      * and configuration.  Each logFile should be unique
@@ -38,6 +40,13 @@ public class Executer
         randGen = new Random(seed);
         runConfig = config;
         window = graphics;
+        try{
+            logFileWriter = new FileWriter(logFile);
+        }
+        catch(Exception e){
+            // throw an exception casued by another exception
+            throw new Error("failed to open logging file",e);
+        }
     }
     
     /**
@@ -62,22 +71,50 @@ public class Executer
         // The results of this list say how many trucks are finished.
         // I could (and might) modify this to be the number of orders each have done, and get
         // a progress bar: but that's a job for later
-        DoublyLinkedList<Boolean> finishedTrucks = trucks.applyFunctionToList((Truck t) ->{
-            t.action();
-            // TODO: run logging method
-            return t.isComplete();
+        DoublyLinkedList<String> truckStatuses = trucks.applyFunctionToList((Truck t) ->{
+            t .action();
+            return t.status();
         });
         
         // update the window
         window.repaint();
         
+        // dump the status's into the file
+        try{
+            // we use the same StringBuilder tricks as in Truck/Warehous.status(): otherwise
+            // Java will repeatedly allocate different arrays for each string as it builds them
+            StringBuilder status = new StringBuilder();
+            for(int i = 0; i < warehouseStatuses.size(); i++){
+                status.append("Warehouse ");
+                status.append(i);
+                status.append(": ");
+                status.append(warehouseStatuses.fakePop());
+                // todo: profile again, check the cost of this
+                // probably won't have time to do that before I turn it in. oh well.
+                logFileWriter.write(status.toString());
+                status.setLength(0);
+            }
+            for(int i = 0; i < truckStatuses.size(); i++){
+                status.append("Truck ");
+                status.append(i);
+                status.append(": ");
+                status.append(truckStatuses.fakePop());
+                logFileWriter.write(status.toString());
+                status.setLength(0);
+            }
+        }
+        catch(Exception e){
+            throw new Error("Failed to write logs",e);
+        }
         
         // check if done: no way to do this but through good ol' iteration
-        for(int i = 0; i < finishedTrucks.size(); i++){
-            if(!finishedTrucks.fakePop()){
+        trucks.resetFakeQueue();
+        for(int i = 0; i < trucks.size(); i++){
+            if(!trucks.fakePop().isComplete()){
                 return true;
             }
         }
+        trucks.resetFakeQueue();
         
         return false;
     }

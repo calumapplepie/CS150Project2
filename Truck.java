@@ -119,7 +119,7 @@ public abstract class Truck implements Schedule, Render
             // note it in the log
             statusString.append("Joined entry queue for the warehouse at ");
             statusString.append(destination.location.toString());
-            statusString.append("\n");
+            statusString.append(";  ");
         }
         
     }
@@ -157,9 +157,10 @@ public abstract class Truck implements Schedule, Render
         }
         statusString.append("cargo at ");
         statusString.append(currentLocation.toString());
+        statusString.append(";  ");
         
-        
-        // whether or not we are done will be evaluated by the router, when it's time
+        // whether or not we are now done will be evaluated by the router,
+        // after it's next action() call
         
         // set current order to null to trigger re-routing on next cycle
         currentOrder = null;
@@ -178,6 +179,11 @@ public abstract class Truck implements Schedule, Render
         // it is semantically equivalent with a simple string +=, but this avoids memory allocations
         // it'd be nice if the compiler could spot that as well, buuuuutt it can't.
                
+        // if we're done, don't bother with a status
+        if(complete){
+            return "";
+        }
+        
         // First, our location.
         statusString.append("Location: ");
         statusString.append(currentLocation.toString());
@@ -217,6 +223,8 @@ public abstract class Truck implements Schedule, Render
             }
             
         }
+        // trailing newline
+        statusString.append("\n");
         
         // convert to a proper string
         String status = statusString.toString();
