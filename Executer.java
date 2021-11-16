@@ -29,6 +29,7 @@ public class Executer
     private long sleepTime = 0;
     /** total number of nanoseconds spent executing **/
     private long executionTime = 0;
+    private final long initialStartTime = 0;
     
     private final FileWriter logFileWriter;
     
@@ -37,6 +38,7 @@ public class Executer
      * and configuration.  Each logFile should be unique
      */
     public Executer(Configuration config, long seed, JFrame graphics, String logFile){
+        initialStartTime = System.nanoTime();
         randGen = new Random(seed);
         runConfig = config;
         window = graphics;
@@ -157,6 +159,23 @@ public class Executer
         System.out.println(executionTime + " execting, slept: "+ sleepTime);
     }
     
+    public void printDiagnostic(){
+        ("Run Complete!  execution: ");
+        System.out.print(executionTime + ", plannedSleep: "+ sleepTime);
+        ("overall time: ", initialStartTime - System.nanoTime());
+        ("ticks evaluated: ", ticks);
+        
+        long routerTime = 0;
+        trucks.resetFakeQueue();
+        
+        for(int i = 0; i< trucks.size(); i++){
+            routerTime += trucks.fakePop().routingTime();
+        }
+        
+        ("time spent routing: ", routerTime);
+        
+    }
+
     /**
      * This does the groundwork: generating all the objects needed
      * for the simulation to work
