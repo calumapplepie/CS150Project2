@@ -161,25 +161,34 @@ public class Executer
             }
             timeStart = System.nanoTime();
         }
-        printDiagnostic();
+        printFinalStats();
     }
     
-    public void printDiagnostic(){
+    public void printFinalStats(){
         // print out some basic stats
         System.out.print("Run Complete!  execution: ");
         System.out.print(executionTime + ", plannedSleep: "+ sleepTime);
-        System.out.print("overall time: "+ (initialStartTime - System.nanoTime()));
-        System.out.print("ticks evaluated: "+ ticks);
+        System.out.print(" overall time: "+ (initialStartTime - System.nanoTime()));
+        System.out.print(" ticks evaluated: "+ ticks);
         
         
         long routerTime = 0;
-        trucks.resetFakeQueue();
+        double filledCargoUnitTimes = 0;
+        long availableCargoUnits = 0;
         
+        availableCargoUnits += runConfig.numSmallTrucks  * 1;
+        availableCargoUnits += runConfig.numMediumTrucks * 2;
+        availableCargoUnits += runConfig.numLargeTrucks  * 3;
+        
+        trucks.resetFakeQueue();
         for(int i = 0; i< trucks.size(); i++){
-            routerTime += trucks.fakePop().routingTime();
+            Truck t = trucks.fakePop();
+            routerTime += t.routingTime();
+            filledCargoUnitTimes += t.cargoFilledTime();
         }
         
-        System.out.print("time spent routing: "+ routerTime);
+        System.out.print(" time spent routing: "+ routerTime);
+        double percentCargoFullTime = filledCargoUnitTimes/(availableCargoUnits*ticks); 
         
         // end the diagnostic
         System.out.println();

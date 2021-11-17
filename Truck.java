@@ -25,6 +25,8 @@ public abstract class Truck implements Schedule, Render
     // defer whole-manifest traversals when possible
     private boolean complete = false;
     private final StringBuilder statusString;
+    private int ticksOfFullCargo = 0;
+    private int cargoCount =0;
     
     
     /**
@@ -81,7 +83,8 @@ public abstract class Truck implements Schedule, Render
                 throw new Error("Failed to create router object");
             }
             
-            
+            // lastly, lets init the order
+            currentOrder = router.getNextOrder(currentLocation);
     }
     
     /**
@@ -91,24 +94,16 @@ public abstract class Truck implements Schedule, Render
     public void action(){
         if(paused == true){
             return;
-        }
-        
-        // go to router if no order
-        if(currentOrder == null){
-            currentOrder = router.getNextOrder(currentLocation);
-        }
-        // if it's still null, then routing has decided we're done
-        if(currentOrder == null){
-            paused = true;
-            complete = true;
-            return;
-        }
+        }      
         
         // What is our destiny?
         Warehouse destination = currentOrder.getTargetWarehouse();
         
         // move towards target
         currentLocation = currentLocation.calculateNext(destination.location, this.getMoveSpeed());
+        
+        // add to the cargo accumulator
+        ticksOfFullCargo += cargoCount;
         
         // if we've arrived
         if(currentLocation.equals(destination.location)){
@@ -145,25 +140,36 @@ public abstract class Truck implements Schedule, Render
             currentCargo[i] = currentOrder;
             // add this to the string log
             statusString.append("Picked up ");
+            // we now have another piece of cargo!
+            cargoCount++;
         }
         else{
             // we need to pull the order out of the array, it's completed
             for(int i = 0; i < currentCargo.length; i++){
                 if(currentOrder == currentCargo[i]){
                     currentCargo[i] = null;
+                    // if we are dropping off two, don't fail!
+                    
                 }
             }
             statusString.append("Dropped off ");
+            // we lost a piece of cargo :(
+            cargoCount --;
         }
         statusString.append("cargo at ");
         statusString.append(currentLocation.toString());
         statusString.append(";  ");
         
-        // whether or not we are now done will be evaluated by the router,
-        // after it's next action() call    
+        // route now to avoid a conditional in an inner loop
+        currentOrder = router.getNextOrder(currentLocation);
         
-        // set current order to null to trigger re-routing on next cycle
-        currentOrder = null;
+        // if it's null, then routing 'failed': there is no next order
+        // that means we're done! we can go home!
+        if(currentOrder == null){
+            paused = true;
+            complete = true;
+            return;
+        }    
     }
     
     /**
@@ -199,13 +205,6 @@ public abstract class Truck implements Schedule, Render
         
         // and our cargo, displayed as filled/total
         statusString.append(" Cargo: ");
-        
-        int cargoCount = 0;
-        for(ShipmentOrder i : currentCargo){
-            if(i != null){
-                cargoCount++;
-            }
-        }
         
         statusString.append(cargoCount);
         statusString.append("/");
@@ -301,5 +300,14 @@ public abstract class Truck implements Schedule, Render
      */
     public long routingTime(){
         return router.getExecutionTime();
+    }
+    
+    /**
+     * Gets the number of ticks spent with each piece of cargo
+     * (eg, if you divide by the number of overall ticks, you get the average
+     * ammount of cargo in the hold).
+     */
+    public int cargoFilledTime(){
+        return ticksOfFullCargo;
     }
 }
