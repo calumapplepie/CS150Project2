@@ -297,7 +297,7 @@ public class DoublyLinkedList<E>
             // change tail to point at the other's head as the next element
             // and vice versa for the other head
             tail.next = other.head;
-            other.head.next = tail;
+            other.head.prev = tail;
         }
         else{
             head = other.head;

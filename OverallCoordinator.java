@@ -40,8 +40,9 @@ public class OverallCoordinator
         rawStatuses.applyFunctionToList( (DoublyLinkedList<String> s) -> { statuses.append(s); return null;});
         
         try(FileWriter logger = new FileWriter("summary-log.csv")){
+            statuses.resetFakeQueue();
             for(int i = 0; i < statuses.size(); i++){
-                logger.write(statuses.fakePop());
+                logger.write(statuses.fakePop()+"\n");
             }
         }
         catch(Exception e){
