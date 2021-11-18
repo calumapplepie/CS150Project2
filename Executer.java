@@ -89,7 +89,6 @@ public class Executer
         try{
             // we use the same StringBuilder tricks as in Truck/Warehous.status(): otherwise
             // Java will repeatedly allocate different arrays for each string as it builds them
-            StringBuilder status = new StringBuilder();
             for(int i = 0; i < warehouseStatuses.size(); i++){
                 status.append("Warehouse ");
                 status.append(i);

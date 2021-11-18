@@ -1,4 +1,5 @@
 import javax.swing.JFrame;
+import java.io.FileWriter;
 import java.io.File;
 
 /**
@@ -37,6 +38,15 @@ public class OverallCoordinator
         // now, lets unpack that mess
         DoublyLinkedList<String> statuses = new DoublyLinkedList<String>();
         rawStatuses.applyFunctionToList( (DoublyLinkedList<String> s) -> { statuses.append(s); return null;});
+        
+        try(FileWriter logger = new FileWriter("summary-log.csv")){
+            for(int i = 0; i < statuses.size(); i++){
+                logger.write(statuses.fakePop());
+            }
+        }
+        catch(Exception e){
+            throw new Error("Failed to log status summary", e);
+        }
         // close the program.
         window.dispose();
     }
