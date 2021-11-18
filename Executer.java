@@ -30,7 +30,7 @@ public class Executer
     private long sleepTime = 0;
     /** total number of nanoseconds spent executing **/
     private long executionTime = 0;
-    private final long initialStartTime;
+    private long initialStartTime;
     private final StringBuilder status = new StringBuilder();
     
     private final FileWriter logFileWriter;
@@ -40,7 +40,6 @@ public class Executer
      * and configuration.  Each logFile should be unique
      */
     public Executer(Configuration config, long seed, JFrame graphics, String logFileName){
-        initialStartTime = System.nanoTime();
         randGen = new Random(seed);
         runConfig = config;
         window = graphics;
@@ -136,6 +135,7 @@ public class Executer
      * @return a string describing the overall metrics of this run
      */
     public String start(){
+        initialStartTime = System.nanoTime();
         prepareSimulation();
         prepareGraphics(); 
         
