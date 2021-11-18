@@ -66,7 +66,12 @@ public class Warehouse implements Schedule, Render
         double y = location.yPos - Configuration.objectSize/2;
         double x = location.xPos - Configuration.objectSize/2;
         Rectangle2D rect = new Rectangle2D.Double(x,y,Configuration.objectSize*2,Configuration.objectSize*2);
-        g.setColor(Configuration.warehouseColor);
+        if(enter.size() + exits.size() > 0){
+            g.setColor(Configuration.warehouseColorBusy);
+        }
+        else{
+            g.setColor(Configuration.warehouseColorEmpty);
+        }
         g.fill(rect);
 
     }

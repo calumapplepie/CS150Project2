@@ -30,6 +30,14 @@ public class OverallCoordinator
             states.add(new RunCoordinator(c, window));
         }
         
-        states.applyFunctionToList( (RunCoordinator t) -> {t.start(); return null;});
+        // the type of the next line is a generic of a generic, so lets make the compiler picture that
+        // rather than wrtie it out ourselves.
+        var rawStatuses = states.applyFunctionToList( (RunCoordinator t) ->t.start());
+        
+        // now, lets unpack that mess
+        DoublyLinkedList<String> statuses = new DoublyLinkedList<String>();
+        rawStatuses.applyFunctionToList( (DoublyLinkedList<String> s) -> { statuses.append(s); return null;});
+        // close the program.
+        window.dispose();
     }
 }

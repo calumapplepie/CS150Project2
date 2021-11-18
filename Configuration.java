@@ -82,10 +82,14 @@ public class Configuration
     public static final Color filledColor = Color.ORANGE;
     
     /**
-     * The color of a warehouse
+     * The color of an empty warehouse
      */
-    public static final Color warehouseColor = Color.BLACK;
+    public static final Color warehouseColorEmpty = Color.BLACK;
     
+    /**
+     * The color of a not-empty warehouse
+     */
+    public static final Color warehouseColorBusy = Color.GRAY;
 
     
     protected Configuration(int small, int medium, int large, int warehouses,

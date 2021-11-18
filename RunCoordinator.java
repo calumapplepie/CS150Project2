@@ -21,8 +21,10 @@ public class RunCoordinator
     /**
      * Builds and executes each of the runs it was charged with
      * managing.
+     * 
+     * @return a list of the string statuses of each run
      */
-    public void start(){
+    public DoublyLinkedList<String> start(){
         for(int i = 0; i < 10; i++){
             Executer e = new Executer(runConfig, runConfig.initialRandomSeed+i,window,runConfig.name + i);
             runs.add(e);
@@ -30,9 +32,7 @@ public class RunCoordinator
         
         // Poor mans for-each loop.  I'll probably learn to implement an Iterable
         // interface eventually, but in the mean time, just use this
-        runs.applyFunctionToList( (Executer e) -> {e.start(); return null;} );
-        
-        
-        // TODO: generate report
+        DoublyLinkedList<String> statuses = runs.applyFunctionToList( (Executer e) -> e.start() );
+        return statuses;
     }
 }

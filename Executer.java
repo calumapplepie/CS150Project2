@@ -45,7 +45,7 @@ public class Executer
         runConfig = config;
         window = graphics;
         try{
-            File logFileFile = new File(logFileName);
+            File logFileFile = new File("output:"+logFileName);
             logFileFile.delete();
             logFileWriter = new FileWriter(logFileFile);
         }
@@ -133,8 +133,10 @@ public class Executer
      * This will run execute() repeatedly, until all trucks
      * are finished.  It (may) slow things down a bit, for your
      * viewing pleasure
+     * 
+     * @return a string describing the overall metrics of this run
      */
-    public void start(){
+    public String start(){
         prepareSimulation();
         prepareGraphics(); 
         
@@ -161,15 +163,18 @@ public class Executer
             }
             timeStart = System.nanoTime();
         }
-        printFinalStats();
+        String stats = getFinalStats();
+        System.out.println(stats);
+        return getFinalStats();
     }
     
-    public void printFinalStats(){
+    public String getFinalStats(){
         // print out some basic stats
-        System.out.print("Run Complete!  execution: ");
-        System.out.print(executionTime + ", plannedSleep: "+ sleepTime);
-        System.out.print(" overall time: "+ (initialStartTime - System.nanoTime()));
-        System.out.print(" ticks evaluated: "+ ticks);
+        StringBuilder stats = new StringBuilder();
+        stats.append("Run Complete!  execution, ");
+        stats.append(executionTime + ", plannedSleep, "+ sleepTime);
+        stats.append(", overall time, "+ (System.nanoTime() - initialStartTime));
+        stats.append(", ticks evaluated, "+ ticks);
         
         
         long routerTime = 0;
@@ -187,11 +192,10 @@ public class Executer
             filledCargoUnitTimes += t.cargoFilledTime();
         }
         
-        System.out.print(" time spent routing: "+ routerTime);
+        stats.append(", time spent routing, "+ routerTime);
         double percentCargoFullTime = filledCargoUnitTimes/(availableCargoUnits*ticks); 
-        
-        // end the diagnostic
-        System.out.println();
+        stats.append(", cargo fill percent, " + percentCargoFullTime);
+        return stats.toString();
     }
 
     /**
